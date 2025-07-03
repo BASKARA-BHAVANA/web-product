@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  USER
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  role          Role      @default(USER)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// CABINET 
+model Cabinet {
+  id             String  @id @default(uuid())
+  name           String
+  tagline        String
+  logo           String
+  periode        String
+  primaryColor   String? @map("primary_color")
+  onPrimaryColor String? @map("on_primary_color")
+  primaryImage   String  @map("primary_image")
+  secondaryImage String  @map("secondary_image")
+  description    String
+  vision         String
+  mission        String
+  isActive       Boolean @default(false) @map("is_active")
+
+  divisions Division[]
+  programs  WorkProgram[]
+  contacts  CabinetContact[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("cabinets")
+}
+
+model CabinetContact {
+  id        String @id @default(uuid())
+  cabinetId String
+  name      String
+  key       String
+  value     String
+
+  cabinet Cabinet @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+
+  @@map("cabinet_contacts")
+}
+
+// DIVISION 
+model Division {
+  id          String @id @default(uuid())
+  cabinetId   String @map("cabinet_id")
+  name        String
+  tagline     String
+  logo        String
+  description String
+
+  cabinet  Cabinet          @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+  members  DivisionMember[]
+  programs WorkProgram[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("divisions")
+}
+
+model DivisionMember {
+  id         String  @id @default(uuid())
+  divisionId String  @map("division_id")
+  fullName   String  @map("full_name")
+  position   String?
+  picture    String?
+
+  division Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("division_members")
+}
+
+// WORK PROGRAM
+model WorkProgram {
+  id          String    @id @default(uuid())
+  divisionId  String?   @map("division_id")
+  cabinetId   String?   @map("cabinet_id")
+  title       String
+  picture     String?
+  description String?
+  content     String?   @db.LongText
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  isPinned    Boolean   @default(false) @map("is_pinned")
+
+  division Division? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
+  cabinet  Cabinet?  @relation(fields: [cabinetId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("work_programs")
+}
