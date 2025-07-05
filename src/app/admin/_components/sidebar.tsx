@@ -39,6 +39,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/atoms/avatar';
 import { useSession } from 'next-auth/react';
 import { getInitials } from '@/utils/string';
+import ThemeToggle from '@/components/molecules/theme-toggle';
 
 interface Menu {
   title: string;
@@ -163,6 +164,9 @@ export function AdminSidebar({
         ))}
       </SidebarContent>
       <SidebarFooter>
+        <SidebarGroup>
+          <ThemeToggle />
+        </SidebarGroup>
         <SidebarMenuButton
           size="lg"
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"

@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/route';
 import SessionWrapper from './_components/session-wrapper';
 import { Toaster } from '@/components/atoms/sonner';
+import { ThemeProvider } from './_components/theme-provider';
 
 const inter = Inter({
   variable: '--font-sans',
@@ -36,7 +37,14 @@ export default async function RootLayout({
         className={`${inter.variable} ${firaCode.variable} overflow-x-hidden antialiased`}
       >
         <SessionWrapper session={session}>
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
           <Toaster />
         </SessionWrapper>
       </body>
