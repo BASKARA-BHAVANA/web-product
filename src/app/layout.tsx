@@ -32,7 +32,7 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${firaCode.variable} overflow-x-hidden antialiased`}
       >
@@ -44,8 +44,8 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster />
           </ThemeProvider>
-          <Toaster />
         </SessionWrapper>
       </body>
     </html>

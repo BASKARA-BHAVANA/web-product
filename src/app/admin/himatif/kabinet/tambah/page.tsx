@@ -6,134 +6,57 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/atoms/card';
-import { useParams } from 'next/navigation';
 import { useFormik } from 'formik';
-import { CreateUpdateCabinet } from '../actions';
+import { createCabinet } from '../actions';
 import { Input } from '@/components/atoms/input';
 import { Textarea } from '@/components/atoms/textarea';
 import { Switch } from '@/components/atoms/switch';
 import { Button } from '@/components/atoms/button';
 import { InputSelect } from '@/components/atoms/select';
 import { useState } from 'react';
-import * as y from 'yup';
-
-const ContactKeys = [
-  {
-    value: 'address',
-    label: 'Alamat',
-  },
-  {
-    value: 'email',
-    label: 'Email',
-  },
-  {
-    value: 'whatsapp',
-    label: 'Whatsapp',
-  },
-  {
-    value: 'instagram',
-    label: 'Instagram',
-  },
-  {
-    value: 'tiktok',
-    label: 'Tiktok',
-  },
-  {
-    value: 'youtube',
-    label: 'Youtube',
-  },
-  {
-    value: 'linkedin',
-    label: 'Linkedin',
-  },
-];
-
-export const schema: y.ObjectSchema<CreateUpdateCabinet> = y.object({
-  name: y.string().required('Wajib diisi'),
-  tagline: y.string().required('Wajib diisi'),
-  logo: y
-    .mixed<File>()
-    .required('Wajib diisi')
-    .test(
-      'fileType',
-      'Jenis fail tidak valid. Hanya .png yang diizinkan.',
-      (value) => (value ? ['image/png'].includes((value as File).type) : true)
-    )
-    .test(
-      'fileSize',
-      'Fail terlalu besar. Ukuran maksimum adalah 3MB.',
-      (value) => (value ? (value as File).size <= 3 * 1024 * 1024 : true)
-    ),
-  periode: y.string().required('Wajib diisi'),
-  primaryColor: y.string().optional(),
-  onPrimaryColor: y.string().optional(),
-  primaryImage: y
-    .mixed<File>()
-    .required('Wajib diisi')
-    .test(
-      'fileType',
-      'Jenis fail tidak valid. Hanya .png .jpg .jpeg yang diizinkan.',
-      (value) =>
-        value
-          ? ['image/png', 'image/jpeg', 'image/jpg'].includes(
-              (value as File).type
-            )
-          : true
-    )
-    .test(
-      'fileSize',
-      'Fail terlalu besar. Ukuran maksimum adalah 3MB.',
-      (value) => (value ? (value as File).size <= 3 * 1024 * 1024 : true)
-    ),
-  secondaryImage: y
-    .mixed<File>()
-    .required('Wajib diisi')
-    .test(
-      'fileType',
-      'Jenis fail tidak valid. Hanya .png .jpg .jpeg yang diizinkan.',
-      (value) =>
-        value
-          ? ['image/png', 'image/jpeg', 'image/jpg'].includes(
-              (value as File).type
-            )
-          : true
-    )
-    .test(
-      'fileSize',
-      'Fail terlalu besar. Ukuran maksimum adalah 3MB.',
-      (value) => (value ? (value as File).size <= 3 * 1024 * 1024 : true)
-    ),
-  description: y.string().required('Wajib diisi'),
-  vision: y.string().required('Wajib diisi'),
-  mission: y.string().required('Wajib diisi'),
-  isActive: y.boolean().optional(),
-  contacts: y
-    .array()
-    .of(
-      y.object({
-        name: y.string().optional(),
-        key: y.string().required('Wajib diisi'),
-        value: y.string().required('Wajib diisi'),
-      })
-    )
-    .optional(),
-});
+import {
+  CabinetContacts,
+  createCabinetSchema,
+  CreateUpdateCabinet,
+} from '../model';
+import actionResponseToast from '@/components/molecules/action-response-toast';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
-  const params = useParams();
-  const isAdd = params.id == 'baru';
+  const router = useRouter();
 
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const form = useFormik<CreateUpdateCabinet>({
-    initialValues: {},
-    validationSchema: schema,
-    onSubmit: () => {},
+    initialValues: {
+      name: '',
+      tagline: '',
+      logo: undefined,
+      periode: '',
+      primaryImage: undefined,
+      secondaryImage: undefined,
+      description: '',
+      vision: '',
+      mission: '',
+      isActive: false,
+    },
+    validationSchema: createCabinetSchema,
+    onSubmit: async (val, { setSubmitting }) => {
+      setSubmitting(true);
+      try {
+        await createCabinet(val);
+        router.replace('/admin/himatif/kabinet');
+      } catch (error) {
+        actionResponseToast({ res: error });
+      } finally {
+        setSubmitting(true);
+      }
+    },
   });
 
   return (
     <>
       <div className="mb-4">
-        <h1 className="typo-h1 grow">{isAdd ? 'Tambah' : 'Edit'} Kabinet</h1>
+        <h1 className="typo-h1 grow">Tambah Kabinet</h1>
       </div>
 
       <form onSubmit={form.handleSubmit} className="flex flex-col gap-4">
@@ -176,7 +99,7 @@ const Page = () => {
               name="isActive"
               checked={form.values.isActive}
               error={form.errors.isActive}
-              onChange={form.handleChange}
+              onCheckedChange={(v) => form.setFieldValue('isActive', v)}
             />
           </CardContent>
         </Card>
@@ -292,7 +215,7 @@ const Page = () => {
               >
                 <InputSelect
                   label="Saluran"
-                  list={ContactKeys}
+                  list={CabinetContacts}
                   valueKey={'value'}
                   labelKey={'label'}
                   value={con.key}

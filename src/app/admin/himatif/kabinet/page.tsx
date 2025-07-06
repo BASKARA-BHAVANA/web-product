@@ -40,7 +40,7 @@ const Page = async ({ searchParams }: Props) => {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <h1 className="typo-h1 grow">Kabinet</h1>
         <Button asChild>
-          <Link href={'kabinet/baru'}>
+          <Link href={'kabinet/tambah'}>
             <PlusIcon />
             Baru
           </Link>
