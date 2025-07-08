@@ -19,8 +19,8 @@ import {
   createCabinetSchema,
   CreateUpdateCabinet,
 } from '../model';
-import actionResponseToast from '@/components/molecules/action-response-toast';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const Page = () => {
   const router = useRouter();
@@ -42,14 +42,10 @@ const Page = () => {
     validationSchema: createCabinetSchema,
     onSubmit: async (val, { setSubmitting }) => {
       setSubmitting(true);
-      try {
-        await createCabinet(val);
-        router.replace('/admin/himatif/kabinet');
-      } catch (error) {
-        actionResponseToast({ res: error });
-      } finally {
-        setSubmitting(true);
-      }
+      const { status, message } = await createCabinet(val);
+      if (status) toast[status](message);
+      if (status == 'success') router.replace('/admin/himatif/kabinet');
+      setSubmitting(false);
     },
   });
 

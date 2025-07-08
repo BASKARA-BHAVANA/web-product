@@ -4,7 +4,7 @@ import { buildActionFailed } from '@/lib/actions/action-failed-builder';
 import { requireAuth } from '@/lib/actions/auth';
 import { prisma } from '@/lib/prisma';
 import { CreateUpdateCabinet } from './model';
-import { uploadFile } from '@/lib/actions/file';
+import { deleteFile, uploadFile } from '@/lib/actions/file';
 import { ActionSuccess } from '@/lib/actions/action-result';
 
 export interface getCabinetsProps {
@@ -35,6 +35,7 @@ export async function getCabinets({
           logo: true,
           name: true,
           isActive: true,
+          periode: true,
           _count: {
             select: {
               divisions: true,
@@ -104,7 +105,16 @@ export async function createCabinet(payload: CreateUpdateCabinet) {
 
 export async function deleteCabinet(id: string) {
   try {
-    console.log(id);
+    await requireAuth(['ADMIN', 'SUPERADMIN']);
+
+    const data = await prisma.cabinet.delete({
+      where: { id },
+    });
+
+    if (data.logo) await deleteFile(data.logo, 'public');
+    if (data.primaryImage) await deleteFile(data.primaryImage, 'public');
+    if (data.secondaryImage) await deleteFile(data.secondaryImage, 'public');
+
     return new ActionSuccess('Berhasil').toPlain();
   } catch (error) {
     return buildActionFailed(error).toPlain();

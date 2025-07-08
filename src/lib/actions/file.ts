@@ -3,9 +3,11 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+export type FileAccess = 'public' | 'private';
+
 export async function uploadFile(
   file: File,
-  options?: { access: 'public' | 'private'; baseFolder?: string }
+  options?: { access: FileAccess; baseFolder?: string }
 ) {
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -33,6 +35,20 @@ export async function uploadFile(
 
     return { path: publicPath };
   } catch (error) {
+    return { error };
+  }
+}
+
+export async function deleteFile(filePath: string, access: FileAccess) {
+  try {
+    const baseFolder = access == 'private' ? 'private' : 'public';
+    const fullPath = path.join(process.cwd(), baseFolder, filePath);
+
+    await fs.unlink(fullPath);
+
+    return { success: true };
+  } catch (error) {
+    console.log(error);
     return { error };
   }
 }

@@ -3,13 +3,14 @@
 import React, {
   startTransition,
   useActionState,
+  useCallback,
   useEffect,
   useState,
 } from 'react';
 import { Button } from '@/components/atoms/button';
 import { Edit2Icon, PlusIcon, Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
-import { getCabinets, getCabinetsProps } from './actions';
+import { deleteCabinet, getCabinets, getCabinetsProps } from './actions';
 import { toast } from 'sonner';
 import DataTable from '@/components/molecules/data-table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/atoms/avatar';
@@ -18,32 +19,49 @@ import { useRouter } from 'next/navigation';
 
 const Page = () => {
   const router = useRouter();
+
+  // data listing
   const [listProps, setListProps] = useState<getCabinetsProps>({
     page: 1,
     limit: 20,
   });
   const [list, getResult, listLoading] = useActionState(
-    async (_: unknown, props: getCabinetsProps) => getCabinets(props),
+    (_: unknown, props: getCabinetsProps) => getCabinets(props),
     { message: '' }
   );
 
-  useEffect(() => {
+  const _getResult = useCallback(() => {
     startTransition(() => {
       getResult(listProps);
     });
-  }, [listProps]);
+  }, [getResult, listProps]);
+
+  useEffect(() => _getResult(), [listProps]);
 
   useEffect(() => {
     if (list.status && list.status != 'success')
       toast[list.status](list.message);
   }, [list]);
 
+  // data removing
+  const [remove, postRemove, removeLoading] = useActionState(
+    (_: unknown, id: string) => deleteCabinet(id),
+    { message: '' }
+  );
+
+  useEffect(() => {
+    if (remove.status) {
+      toast[remove.status](remove.message);
+      if (remove.status === 'success') _getResult();
+    }
+  }, [remove]);
+
   return (
     <div>
       <h1 className="typo-h1 mb-4 grow">Kabinet</h1>
 
       <DataTable
-        loading={listLoading}
+        loading={listLoading || removeLoading}
         data={list.data?.items ?? []}
         filters={[
           {
@@ -78,12 +96,13 @@ const Page = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">
-                    {row.original.name}
+                  <p className="typo-p truncate">{row.original.name}</p>
+                  <span className="typo-small text-muted-foreground">
+                    {row.original.periode}{' '}
+                    {row.original.isActive && (
+                      <span className="typo-small text-green-500">AKTIF</span>
+                    )}
                   </span>
-                  {row.original.isActive && (
-                    <span className="typo-small text-green-500">AKTIF</span>
-                  )}
                 </div>
               </div>
             ),
@@ -107,14 +126,23 @@ const Page = () => {
           {
             icon: Edit2Icon,
             label: 'Edit',
-            onClick: (dat) => {
-              router.push(`users/${dat.id}`);
+            onClick: (data) => {
+              router.push(`users/${data.id}`);
             },
           },
           {
             icon: Trash2Icon,
             label: 'Hapus',
-            onClick: () => {},
+            onClick: (data) => {
+              toast.warning(`Hapus '${data.name}'?`, {
+                action: {
+                  label: 'Ya',
+                  onClick: () => {
+                    startTransition(() => postRemove(data.id));
+                  },
+                },
+              });
+            },
           },
         ]}
         pagination={{
