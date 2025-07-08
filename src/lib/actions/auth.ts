@@ -2,7 +2,7 @@
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getServerSession } from 'next-auth';
-import { ActionFailed } from './action-response';
+import { ActionFailed } from './action-result';
 
 export async function requireAuth(roles?: string[]) {
   const session = await getServerSession(authOptions);

@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { ActionFailed } from './action-response';
 import { ValidationError as YupValidationError } from 'yup';
+import { ActionFailed } from './action-result';
 
 const buildActionFailed = (error: unknown): ActionFailed => {
   if (error instanceof ActionFailed) return error;
@@ -22,7 +22,7 @@ const buildActionFailed = (error: unknown): ActionFailed => {
       stack.push(`${e.path}: ${e.message}`);
     });
   }
-  return new ActionFailed(message);
+  return new ActionFailed(message, stack);
 };
 
 export { buildActionFailed };

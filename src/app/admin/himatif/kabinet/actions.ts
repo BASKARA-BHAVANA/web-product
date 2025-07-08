@@ -1,21 +1,23 @@
 'use server';
 
 import { buildActionFailed } from '@/lib/actions/action-failed-builder';
-import { IActionResponse } from '@/lib/actions/action-response';
 import { requireAuth } from '@/lib/actions/auth';
 import { prisma } from '@/lib/prisma';
 import { CreateUpdateCabinet } from './model';
 import { uploadFile } from '@/lib/actions/file';
+import { ActionSuccess } from '@/lib/actions/action-result';
+
+export interface getCabinetsProps {
+  search?: string;
+  page?: number;
+  limit?: number;
+}
 
 export async function getCabinets({
   search,
   page = 1,
   limit = 15,
-}: {
-  search?: string;
-  page?: number;
-  limit?: number;
-}) {
+}: getCabinetsProps) {
   try {
     await requireAuth(['ADMIN', 'SUPERADMIN']);
 
@@ -25,8 +27,8 @@ export async function getCabinets({
       }),
     };
 
-    return {
-      data: await prisma.cabinet.findMany({
+    return new ActionSuccess('Berhasil', {
+      items: await prisma.cabinet.findMany({
         where,
         select: {
           id: true,
@@ -45,15 +47,13 @@ export async function getCabinets({
         orderBy: { createdAt: 'desc' },
       }),
       count: await prisma.cabinet.count({ where }),
-    };
+    }).toPlain();
   } catch (error) {
-    return { error };
+    return buildActionFailed(error).toPlain();
   }
 }
 
-export async function createCabinet(
-  payload: CreateUpdateCabinet
-): Promise<IActionResponse> {
+export async function createCabinet(payload: CreateUpdateCabinet) {
   try {
     await requireAuth(['ADMIN', 'SUPERADMIN']);
 
@@ -96,7 +96,16 @@ export async function createCabinet(
       },
     });
 
-    return { message: 'Berhasil' };
+    return new ActionSuccess('Berhasil').toPlain();
+  } catch (error) {
+    return buildActionFailed(error).toPlain();
+  }
+}
+
+export async function deleteCabinet(id: string) {
+  try {
+    console.log(id);
+    return new ActionSuccess('Berhasil').toPlain();
   } catch (error) {
     return buildActionFailed(error).toPlain();
   }

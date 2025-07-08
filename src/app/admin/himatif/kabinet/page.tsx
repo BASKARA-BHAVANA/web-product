@@ -1,124 +1,135 @@
-import React from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/atoms/table';
-import { Card } from '@/components/atoms/card';
-import ActionResponseAlert from '@/components/molecules/action-response-alert';
+'use client';
+
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useState,
+} from 'react';
+import { Button } from '@/components/atoms/button';
+import { Edit2Icon, PlusIcon, Trash2Icon } from 'lucide-react';
+import Link from 'next/link';
+import { getCabinets, getCabinetsProps } from './actions';
+import { toast } from 'sonner';
+import DataTable from '@/components/molecules/data-table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/atoms/avatar';
 import { getInitials } from '@/utils/string';
-import PaginationBar from '@/components/molecules/pagination-bar';
-import { Button } from '@/components/atoms/button';
-import { Edit2Icon, PlusIcon, SearchIcon, Trash2Icon } from 'lucide-react';
-import { Input } from '@/components/atoms/input';
-import Link from 'next/link';
-import { getCabinets } from './actions';
+import { useRouter } from 'next/navigation';
 
-interface Props {
-  searchParams?: Promise<{
-    search: string;
-    page: number;
-    limit: number;
-  }>;
-}
-
-const Page = async ({ searchParams }: Props) => {
-  const { search = '', page = 1, limit = 10 } = (await searchParams) ?? {};
-
-  const { data, count, error } = await getCabinets({
-    search: search,
-    page: page,
-    limit: limit,
+const Page = () => {
+  const router = useRouter();
+  const [listProps, setListProps] = useState<getCabinetsProps>({
+    page: 1,
+    limit: 20,
   });
+  const [list, getResult, listLoading] = useActionState(
+    async (_: unknown, props: getCabinetsProps) => getCabinets(props),
+    { message: '' }
+  );
+
+  useEffect(() => {
+    startTransition(() => {
+      getResult(listProps);
+    });
+  }, [listProps]);
+
+  useEffect(() => {
+    if (list.status && list.status != 'success')
+      toast[list.status](list.message);
+  }, [list]);
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <h1 className="typo-h1 grow">Kabinet</h1>
-        <Button asChild>
-          <Link href={'kabinet/tambah'}>
-            <PlusIcon />
-            Baru
-          </Link>
-        </Button>
-      </div>
+      <h1 className="typo-h1 mb-4 grow">Kabinet</h1>
 
-      <ActionResponseAlert error={error} className="mb-4" />
-
-      <form className="mb-4 flex flex-wrap gap-2">
-        <div>
-          <Input
-            type="text"
-            name="search"
-            placeholder="Cari..."
-            defaultValue={search}
-          />
-        </div>
-        <Button type="submit" variant={'outline'} size={'icon'}>
-          <SearchIcon />
-        </Button>
-      </form>
-
-      <Card className="mb-4 p-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead></TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Divisi</TableHead>
-              <TableHead>Program kerja</TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data?.map((dat, i) => (
-              <TableRow key={i}>
-                <TableCell></TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={dat.logo ?? ''} alt={dat.name ?? ''} />
-                      <AvatarFallback className="rounded-lg">
-                        {getInitials(dat.name)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-medium">{dat.name}</span>
-                      {dat.isActive && (
-                        <span className="typo-small text-green-500">AKTIF</span>
-                      )}
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <p className="text-p">{dat._count.divisions}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-p">{dat._count.programs}</p>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button variant={'outline'} size={'icon'} asChild>
-                      <Link href={`users/${dat.id}`}>
-                        <Edit2Icon />
-                      </Link>
-                    </Button>
-                    <Button variant={'outline'} size={'icon'}>
-                      <Trash2Icon />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
-
-      <PaginationBar count={count} page={page} limit={limit} />
+      <DataTable
+        loading={listLoading}
+        data={list.data?.items ?? []}
+        filters={[
+          {
+            label: 'Cari',
+            onValueChange: (v) =>
+              setListProps((s) => ({ ...s, page: 1, search: v as string })),
+            type: 'search',
+            value: listProps.search ?? '',
+          },
+        ]}
+        slotTopRight={
+          <Button asChild>
+            <Link href={'kabinet/tambah'}>
+              <PlusIcon />
+              Baru
+            </Link>
+          </Button>
+        }
+        cols={[
+          {
+            key: 'cabinet',
+            label: 'Kabinet',
+            cell: ({ row }) => (
+              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage
+                    src={row.original.logo ?? ''}
+                    alt={row.original.name ?? ''}
+                  />
+                  <AvatarFallback className="rounded-lg">
+                    {getInitials(row.original.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">
+                    {row.original.name}
+                  </span>
+                  {row.original.isActive && (
+                    <span className="typo-small text-green-500">AKTIF</span>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+          {
+            key: 'count_divisions',
+            label: 'Divisi',
+            cell: ({ row }) => (
+              <p className="text-p">{row.original._count.divisions}</p>
+            ),
+          },
+          {
+            key: 'count_program',
+            label: 'Program kerja',
+            cell: ({ row }) => (
+              <p className="text-p">{row.original._count.programs}</p>
+            ),
+          },
+        ]}
+        rowActions={[
+          {
+            icon: Edit2Icon,
+            label: 'Edit',
+            onClick: (dat) => {
+              router.push(`users/${dat.id}`);
+            },
+          },
+          {
+            icon: Trash2Icon,
+            label: 'Hapus',
+            onClick: () => {},
+          },
+        ]}
+        pagination={{
+          count: list.data?.count ?? 0,
+          index: listProps.page! - 1,
+          size: listProps.limit!,
+          onChange: ({ index, size }) => {
+            setListProps((s) => ({
+              ...s,
+              page: index + 1,
+              pageSize: size,
+            }));
+          },
+        }}
+      />
     </div>
   );
 };
