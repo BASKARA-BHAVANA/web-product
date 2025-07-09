@@ -1,3 +1,4 @@
+import { isFileSizeUnder, isValidFileType, YupFileType } from '@/utils/yup';
 import * as y from 'yup';
 
 export const CabinetContacts = [
@@ -31,6 +32,21 @@ export const CabinetContacts = [
   },
 ];
 
+export const LogoFileTypes: YupFileType[] = ['image/png'];
+export const LogoFileSize = 3;
+export const PrimaryImageFileTypes: YupFileType[] = [
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+];
+export const PrimaryImageFileSize = 3;
+export const SecondaryImageFileTypes: YupFileType[] = [
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+];
+export const SecondaryImageFileSize = 3;
+
 export interface CreateUpdateCabinet {
   name: string;
   tagline: string;
@@ -61,12 +77,12 @@ export const createCabinetSchema: y.ObjectSchema<CreateUpdateCabinet> =
       .test(
         'fileType',
         'Jenis fail tidak valid. Hanya .png yang diizinkan.',
-        (value) => (value ? ['image/png'].includes((value as File).type) : true)
+        (v) => isValidFileType(v, LogoFileTypes)
       )
       .test(
         'fileSize',
         'Fail terlalu besar. Ukuran maksimum adalah 3MB.',
-        (value) => (value ? (value as File).size <= 3 * 1024 * 1024 : true)
+        (v) => isFileSizeUnder(v, LogoFileSize)
       ),
     periode: y.string().required('Wajib diisi'),
     primaryColor: y.string().optional(),
@@ -77,17 +93,12 @@ export const createCabinetSchema: y.ObjectSchema<CreateUpdateCabinet> =
       .test(
         'fileType',
         'Jenis fail tidak valid. Hanya .png .jpg .jpeg yang diizinkan.',
-        (value) =>
-          value
-            ? ['image/png', 'image/jpeg', 'image/jpg'].includes(
-                (value as File).type
-              )
-            : true
+        (v) => isValidFileType(v, PrimaryImageFileTypes)
       )
       .test(
         'fileSize',
         'Fail terlalu besar. Ukuran maksimum adalah 3MB.',
-        (value) => (value ? (value as File).size <= 3 * 1024 * 1024 : true)
+        (v) => isFileSizeUnder(v, PrimaryImageFileSize)
       ),
     secondaryImage: y
       .mixed<File>()
@@ -95,17 +106,12 @@ export const createCabinetSchema: y.ObjectSchema<CreateUpdateCabinet> =
       .test(
         'fileType',
         'Jenis fail tidak valid. Hanya .png .jpg .jpeg yang diizinkan.',
-        (value) =>
-          value
-            ? ['image/png', 'image/jpeg', 'image/jpg'].includes(
-                (value as File).type
-              )
-            : true
+        (v) => isValidFileType(v, SecondaryImageFileTypes)
       )
       .test(
         'fileSize',
         'Fail terlalu besar. Ukuran maksimum adalah 3MB.',
-        (value) => (value ? (value as File).size <= 3 * 1024 * 1024 : true)
+        (v) => isFileSizeUnder(v, SecondaryImageFileSize)
       ),
     description: y.string().required('Wajib diisi'),
     vision: y.string().required('Wajib diisi'),
