@@ -16,7 +16,7 @@ const ThemeToggle = () => {
 
   return (
     <Switch
-      label="Dark mode"
+      label="Mode gelap"
       checked={theme === 'dark'}
       onCheckedChange={(s) => setTheme(s ? 'dark' : 'light')}
     />

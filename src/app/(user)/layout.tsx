@@ -12,6 +12,7 @@ import {
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]/route';
+import Footer from './_components/footer';
 
 const Navs = async () => {
   const session = await getServerSession(authOptions);
@@ -61,7 +62,7 @@ export default async function Layout({
   return (
     <>
       {/* header & navigations  */}
-      <header className="bg-background sticky top-0 left-0 flex shadow">
+      <header className="bg-background sticky top-0 left-0 z-50 flex shadow">
         <Container className="flex items-center gap-4 py-4">
           {/* brand  */}
           <BrandLogo />
@@ -102,6 +103,7 @@ export default async function Layout({
         </Container>
       </header>
       <div className="flex min-h-screen flex-col items-start">{children}</div>
+      <Footer />
     </>
   );
 }
