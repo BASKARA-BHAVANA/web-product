@@ -15,7 +15,7 @@ export async function uploadFile(
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
 
-    const folder = options?.access === 'private' ? 'private' : 'public/uploads';
+    const folder = options?.access === 'public' ? 'public/uploads' : 'uploads';
     const baseFolder = options?.baseFolder ?? '';
     const subfolder = path.join(folder, baseFolder, year.toString(), month);
     const filename = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
@@ -31,7 +31,9 @@ export async function uploadFile(
       filename
     );
     const publicPath =
-      options?.access === 'public' ? `/uploads/${relativePath}` : relativePath;
+      options?.access === 'public'
+        ? `/uploads/${relativePath}`
+        : `/${relativePath}`;
 
     return { path: publicPath };
   } catch (error) {
@@ -39,11 +41,10 @@ export async function uploadFile(
   }
 }
 
-export async function deleteFile(filePath: string, access: FileAccess) {
+export async function deleteFile(filePath: string) {
   try {
-    const baseFolder = access == 'private' ? 'private' : 'public';
+    const baseFolder = filePath.startsWith('/uploads') ? 'public' : 'uploads';
     const fullPath = path.join(process.cwd(), baseFolder, filePath);
-
     await fs.unlink(fullPath);
 
     return { success: true };
@@ -51,4 +52,20 @@ export async function deleteFile(filePath: string, access: FileAccess) {
     console.log(error);
     return { error };
   }
+}
+
+export async function deleteFiles(filePaths: string[]) {
+  await Promise.allSettled(
+    filePaths.map(async (filePath) => {
+      try {
+        const baseFolder = filePath.startsWith('/uploads')
+          ? 'public'
+          : 'uploads';
+        const fullPath = path.join(process.cwd(), baseFolder, filePath);
+        await fs.unlink(fullPath);
+      } catch (error) {
+        console.error(error);
+      }
+    })
+  );
 }

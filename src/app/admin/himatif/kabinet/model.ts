@@ -128,3 +128,65 @@ export const createCabinetSchema: y.ObjectSchema<CreateUpdateCabinet> =
       )
       .optional(),
   });
+
+export const updateCabinetSchema: y.ObjectSchema<Partial<CreateUpdateCabinet>> =
+  y.object({
+    name: y.string().optional(),
+    tagline: y.string().optional(),
+    logo: y
+      .mixed<File>()
+      .optional()
+      .test(
+        'fileType',
+        'Jenis fail tidak valid. Hanya .png yang diizinkan.',
+        (v) => isValidFileType(v, LogoFileTypes)
+      )
+      .test(
+        'fileSize',
+        'Fail terlalu besar. Ukuran maksimum adalah 3MB.',
+        (v) => isFileSizeUnder(v, LogoFileSize)
+      ),
+    periode: y.string().optional(),
+    primaryColor: y.string().optional(),
+    onPrimaryColor: y.string().optional(),
+    primaryImage: y
+      .mixed<File>()
+      .optional()
+      .test(
+        'fileType',
+        'Jenis fail tidak valid. Hanya .png .jpg .jpeg yang diizinkan.',
+        (v) => isValidFileType(v, PrimaryImageFileTypes)
+      )
+      .test(
+        'fileSize',
+        'Fail terlalu besar. Ukuran maksimum adalah 3MB.',
+        (v) => isFileSizeUnder(v, PrimaryImageFileSize)
+      ),
+    secondaryImage: y
+      .mixed<File>()
+      .optional()
+      .test(
+        'fileType',
+        'Jenis fail tidak valid. Hanya .png .jpg .jpeg yang diizinkan.',
+        (v) => isValidFileType(v, SecondaryImageFileTypes)
+      )
+      .test(
+        'fileSize',
+        'Fail terlalu besar. Ukuran maksimum adalah 3MB.',
+        (v) => isFileSizeUnder(v, SecondaryImageFileSize)
+      ),
+    description: y.string().optional(),
+    vision: y.string().optional(),
+    mission: y.string().optional(),
+    isActive: y.boolean().optional(),
+    contacts: y
+      .array()
+      .of(
+        y.object({
+          name: y.string().optional(),
+          key: y.string().required('Wajib diisi'),
+          value: y.string().required('Wajib diisi'),
+        })
+      )
+      .optional(),
+  });

@@ -127,7 +127,7 @@ const Page = () => {
             icon: Edit2Icon,
             label: 'Edit',
             onClick: (data) => {
-              router.push(`users/${data.id}`);
+              router.push(`kabinet/${data.id}/edit`);
             },
           },
           {

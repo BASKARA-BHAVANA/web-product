@@ -11,3 +11,7 @@ export const isValidFileType = (file: any, types: YupFileType[]) => {
 export const isFileSizeUnder = (file: any, mb: number) => {
   return file ? (file as File).size <= mb * 1024 * 1024 : true;
 };
+
+export const stringToNull = (value: any) => {
+  return value === '' ? null : value;
+};
