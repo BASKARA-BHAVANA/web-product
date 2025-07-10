@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import { Input } from '@/components/atoms/input';
 import { Textarea } from '@/components/atoms/textarea';
 import { Button } from '@/components/atoms/button';
+import { InputSelect } from '@/components/atoms/select';
 import {
   startTransition,
   useActionState,
@@ -19,26 +20,28 @@ import {
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { createDivisionSchema, CreateUpdateDivision } from '../model';
-import { createDivision, getCabinets } from '../actions';
-import { InputSelect } from '@/components/atoms/select';
+import { getCabinets, getDivision, updateDivision } from '../../actions';
+import { CreateUpdateDivision, updateDivisionSchema } from '../../model';
 
-const Page = () => {
+const View = ({
+  data,
+}: {
+  data: NonNullable<Awaited<ReturnType<typeof getDivision>>['data']>;
+}) => {
+  const { logo, ...rest } = data;
   const router = useRouter();
 
-  const [previews, setPreviews] = useState<Record<string, string>>({});
-  const form = useFormik<CreateUpdateDivision>({
+  const [previews, setPreviews] = useState<Record<string, string>>({
+    logo: logo ?? '',
+  });
+  const form = useFormik<Partial<CreateUpdateDivision>>({
     initialValues: {
-      cabinetId: '',
-      name: '',
-      tagline: '',
-      logo: undefined,
-      description: '',
+      ...rest,
     },
-    validationSchema: createDivisionSchema,
+    validationSchema: updateDivisionSchema,
     onSubmit: async (val, { setSubmitting }) => {
       setSubmitting(true);
-      const { status, message } = await createDivision(val);
+      const { status, message } = await updateDivision(data.id, val);
       if (status) toast[status](message);
       if (status == 'success') router.replace('/admin/himatif/divisi');
       setSubmitting(false);
@@ -61,7 +64,7 @@ const Page = () => {
   return (
     <>
       <div className="mb-4">
-        <h1 className="typo-h1 grow">Tambah Divisi</h1>
+        <h1 className="typo-h1 grow">Tambah Kabinet</h1>
       </div>
 
       <form onSubmit={form.handleSubmit} className="flex flex-col gap-4">
@@ -137,4 +140,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default View;

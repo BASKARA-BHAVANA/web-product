@@ -121,3 +121,52 @@ export async function createDivision(payload: CreateUpdateDivision) {
     return buildActionFailed(error).toPlain();
   }
 }
+
+export async function updateDivision(
+  id: string,
+  payload: Partial<CreateUpdateDivision>
+) {
+  const uploaded: string[] = [];
+
+  try {
+    await requireAuth(['ADMIN', 'SUPERADMIN']);
+
+    const { logo, ...rest } = payload;
+    const old = await prisma.division.findUniqueOrThrow({ where: { id } });
+
+    const upLogo = logo
+      ? await uploadFile(logo, {
+          access: 'public',
+          baseFolder: 'himatif-logos',
+        })
+      : null;
+    if (upLogo?.path) uploaded.push(upLogo.path);
+
+    await prisma.division.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...(upLogo && { logo: upLogo.path }),
+      },
+    });
+
+    await Promise.allSettled([logo && old.logo ? deleteFile(old.logo) : null]);
+
+    return new ActionSuccess('Berhasil').toPlain();
+  } catch (error) {
+    await deleteFiles(uploaded);
+    return buildActionFailed(error).toPlain();
+  }
+}
+
+export async function getDivision(id: string) {
+  try {
+    await requireAuth(['ADMIN', 'SUPERADMIN']);
+    const data = await prisma.division.findUniqueOrThrow({
+      where: { id },
+    });
+    return new ActionSuccess('Berhasil', data);
+  } catch (error) {
+    return buildActionFailed(error).toPlain();
+  }
+}

@@ -155,14 +155,14 @@ const Page = () => {
             icon: Edit2Icon,
             label: 'Edit',
             onClick: (data) => {
-              router.push(`kabinet/${data.id}/edit`);
+              router.push(`divisi/${data.id}/edit`);
             },
           },
           {
             icon: Users2Icon,
             label: 'Anggota',
             onClick: (data) => {
-              router.push(`kabinet/${data.id}/anggota`);
+              router.push(`divisi/${data.id}/anggota`);
             },
           },
           {
