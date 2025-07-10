@@ -117,6 +117,7 @@ export async function createCabinet(payload: CreateUpdateCabinet) {
     return buildActionFailed(error).toPlain();
   }
 }
+
 export async function updateCabinet(
   id: string,
   payload: Partial<CreateUpdateCabinet>

@@ -4,7 +4,8 @@ import { buildActionFailed } from '@/lib/actions/action-failed-builder';
 import { requireAuth } from '@/lib/actions/auth';
 import { prisma } from '@/lib/prisma';
 import { ActionSuccess } from '@/lib/actions/action-result';
-import { deleteFile } from '@/lib/actions/file';
+import { deleteFile, deleteFiles, uploadFile } from '@/lib/actions/file';
+import { CreateUpdateDivision } from './model';
 
 export interface getDivisionsProps {
   search?: string;
@@ -23,7 +24,7 @@ export async function getDivisions({
     await requireAuth(['ADMIN', 'SUPERADMIN']);
 
     const where = {
-      ...(cabinetIds && {
+      ...(cabinetIds?.length && {
         cabinetId: {
           in: cabinetIds,
         },
@@ -87,6 +88,36 @@ export async function getCabinets() {
 
     return new ActionSuccess('Berhasil', data).toPlain();
   } catch (error) {
+    return buildActionFailed(error).toPlain();
+  }
+}
+
+export async function createDivision(payload: CreateUpdateDivision) {
+  const uploaded: string[] = [];
+
+  try {
+    await requireAuth(['ADMIN', 'SUPERADMIN']);
+
+    const { logo, ...rest } = payload;
+
+    const upLogo = logo
+      ? await uploadFile(logo, {
+          access: 'public',
+          baseFolder: 'division-logos',
+        })
+      : null;
+    if (upLogo?.path) uploaded.push(upLogo.path);
+
+    await prisma.division.create({
+      data: {
+        ...rest,
+        logo: upLogo?.path ?? '',
+      },
+    });
+
+    return new ActionSuccess('Berhasil').toPlain();
+  } catch (error) {
+    await deleteFiles(uploaded);
     return buildActionFailed(error).toPlain();
   }
 }
