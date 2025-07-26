@@ -6,12 +6,26 @@ import Image from 'next/image';
 import Container from '@/components/molecules/container';
 import { Button } from '@/components/atoms/button';
 import { ChevronsUpDownIcon } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/atoms/dropdown-menu';
+import { useRouter } from 'next/navigation';
 
 const View = ({
   data,
 }: {
   data: NonNullable<Awaited<ReturnType<typeof getHomePageData>>['data']>;
 }) => {
+  const router = useRouter();
+
+  const _switchCabinet = (slug: string) => {
+    router.replace(`?kabinet=${slug}`, { scroll: true });
+  };
+
   return (
     <>
       {/* HERO  */}
@@ -44,9 +58,25 @@ const View = ({
               </div>
               <div className="bg-primary mb-4 flex w-fit items-center gap-2 rounded-lg rounded-tl-none p-3">
                 <h1 className="typo-h1">{data.cabinet.name}</h1>
-                <Button size={'icon'} variant={'ghost'}>
-                  <ChevronsUpDownIcon />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size={'icon'} variant={'ghost'}>
+                      <ChevronsUpDownIcon />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <DropdownMenuRadioGroup
+                      value={data.cabinet.slug}
+                      onValueChange={_switchCabinet}
+                    >
+                      {data.cabinets.map((c, i) => (
+                        <DropdownMenuRadioItem key={i} value={c.slug}>
+                          {c.name}
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
               <p className="typo-p mb-4 px-3">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae

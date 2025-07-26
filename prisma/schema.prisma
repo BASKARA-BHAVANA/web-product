@@ -73,6 +73,7 @@ model VerificationToken {
 model Cabinet {
   id             String  @id @default(uuid())
   name           String
+  slug           String  @unique
   tagline        String
   logo           String
   periode        String
@@ -80,9 +81,9 @@ model Cabinet {
   onPrimaryColor String? @map("on_primary_color")
   primaryImage   String  @map("primary_image")
   secondaryImage String  @map("secondary_image")
-  description    String
-  vision         String
-  mission        String
+  description    String  @db.Text
+  vision         String  @db.Text
+  mission        String  @db.Text
   isActive       Boolean @default(false) @map("is_active")
 
   divisions Division[]
@@ -111,10 +112,11 @@ model CabinetContact {
 model Division {
   id          String @id @default(uuid())
   cabinetId   String @map("cabinet_id")
+  slug        String
   name        String
   tagline     String
   logo        String
-  description String
+  description String @db.Text
 
   cabinet  Cabinet          @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
   members  DivisionMember[]
@@ -147,8 +149,9 @@ model WorkProgram {
   divisionId  String?   @map("division_id")
   cabinetId   String?   @map("cabinet_id")
   title       String
+  slug        String
   picture     String?
-  description String?
+  description String?   @db.Text
   content     String?   @db.LongText
   startDate   DateTime? @map("start_date")
   endDate     DateTime? @map("end_date")

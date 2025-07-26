@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { ActionSuccess } from '@/lib/actions/action-result';
 import { deleteFile, deleteFiles, uploadFile } from '@/lib/actions/file';
 import { CreateUpdateDivision } from './model';
+import { toSlug } from '@/utils/string';
 
 export interface getDivisionsProps {
   search?: string;
@@ -100,6 +101,8 @@ export async function createDivision(payload: CreateUpdateDivision) {
 
     const { logo, ...rest } = payload;
 
+    const slug = toSlug(rest.name);
+
     const upLogo = logo
       ? await uploadFile(logo, {
           access: 'public',
@@ -111,6 +114,7 @@ export async function createDivision(payload: CreateUpdateDivision) {
     await prisma.division.create({
       data: {
         ...rest,
+        slug,
         logo: upLogo?.path ?? '',
       },
     });
@@ -134,6 +138,8 @@ export async function updateDivision(
     const { logo, ...rest } = payload;
     const old = await prisma.division.findUniqueOrThrow({ where: { id } });
 
+    const newSlug = rest.name ? toSlug(rest.name) : undefined;
+
     const upLogo = logo
       ? await uploadFile(logo, {
           access: 'public',
@@ -146,6 +152,7 @@ export async function updateDivision(
       where: { id },
       data: {
         ...rest,
+        slug: newSlug,
         ...(upLogo && { logo: upLogo.path }),
       },
     });

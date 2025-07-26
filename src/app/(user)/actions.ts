@@ -12,7 +12,7 @@ export async function getHomePageData({ cabinetSlug }: getHomePageDataProps) {
   try {
     const cabinet = await prisma.cabinet.findFirstOrThrow({
       where: {
-        ...(cabinetSlug ? { id: cabinetSlug } : { isActive: true }),
+        ...(cabinetSlug ? { slug: cabinetSlug } : { isActive: true }),
       },
       include: {
         divisions: true,
@@ -21,13 +21,10 @@ export async function getHomePageData({ cabinetSlug }: getHomePageDataProps) {
     });
 
     const cabinets = await prisma.cabinet.findMany({
-      where: {
-        id: { notIn: [cabinet.id] },
-      },
       select: {
         name: true,
         logo: true,
-        id: true,
+        slug: true,
       },
     });
 

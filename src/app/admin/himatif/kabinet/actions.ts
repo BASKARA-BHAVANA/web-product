@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { CreateUpdateCabinet } from './model';
 import { deleteFile, deleteFiles, uploadFile } from '@/lib/actions/file';
 import { ActionSuccess } from '@/lib/actions/action-result';
+import { toSlug } from '@/utils/string';
 
 export interface getCabinetsProps {
   search?: string;
@@ -75,6 +76,8 @@ export async function createCabinet(payload: CreateUpdateCabinet) {
 
     const { logo, primaryImage, secondaryImage, contacts, ...rest } = payload;
 
+    const slug = toSlug(rest.name);
+
     const upLogo = logo
       ? await uploadFile(logo, {
           access: 'public',
@@ -101,6 +104,7 @@ export async function createCabinet(payload: CreateUpdateCabinet) {
     await prisma.cabinet.create({
       data: {
         ...rest,
+        slug,
         logo: upLogo?.path ?? '',
         primaryImage: upPrimaryImage?.path ?? '',
         secondaryImage: upSecondaryImage?.path ?? '',
@@ -129,6 +133,8 @@ export async function updateCabinet(
 
     const { logo, primaryImage, secondaryImage, contacts, ...rest } = payload;
     const old = await prisma.cabinet.findUniqueOrThrow({ where: { id } });
+
+    const newSlug = rest.name ? toSlug(rest.name) : undefined;
 
     const upLogo = logo
       ? await uploadFile(logo, {
@@ -162,6 +168,7 @@ export async function updateCabinet(
       where: { id },
       data: {
         ...rest,
+        slug: newSlug,
         ...(upLogo && { logo: upLogo.path }),
         ...(upPrimaryImage && { primaryImage: upPrimaryImage.path }),
         ...(upSecondaryImage && { secondaryImage: upSecondaryImage.path }),

@@ -376,7 +376,7 @@ const DataTable = <T,>({
           <TableBody>
             {renderRows}
             {!rows.length && !loading && (
-              <TableRow>
+              <TableRow className="hover:bg-transparent">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"
