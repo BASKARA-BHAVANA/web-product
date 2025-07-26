@@ -127,7 +127,7 @@
 
 @layer utilities {
   .typo-h1 {
-    @apply scroll-m-20 text-4xl font-extrabold tracking-tight text-balance;
+    @apply scroll-m-20 text-4xl font-bold tracking-tight text-balance;
   }
 
   .typo-h2 {

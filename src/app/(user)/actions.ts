@@ -15,7 +15,13 @@ export async function getHomePageData({ cabinetSlug }: getHomePageDataProps) {
         ...(cabinetSlug ? { slug: cabinetSlug } : { isActive: true }),
       },
       include: {
-        divisions: true,
+        divisions: {
+          include: {
+            _count: {
+              select: { members: true, programs: true },
+            },
+          },
+        },
         contacts: true,
       },
     });

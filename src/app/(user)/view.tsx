@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu';
 import { useRouter } from 'next/navigation';
+import DivisionList from './_components/division-list';
 
 const View = ({
   data,
@@ -43,7 +44,7 @@ const View = ({
             <div className="aspect-square max-w-80 grow lg:max-w-xl">
               <Image
                 src={data.cabinet.logo}
-                className="drop-shadow-foreground size-full object-contain drop-shadow-xl"
+                className="drop-shadow-foreground size-full object-contain drop-shadow-lg"
                 width={1080}
                 height={1080}
                 alt={''}
@@ -97,6 +98,9 @@ const View = ({
       </div>
 
       {/* DIVISIONS  */}
+      <Container className="py-24">
+        <DivisionList list={data.cabinet.divisions} />
+      </Container>
     </>
   );
 };
