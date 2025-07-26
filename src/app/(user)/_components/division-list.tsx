@@ -12,10 +12,14 @@ import { Button } from '@/components/atoms/button';
 import { ArrowRightIcon, ClipboardListIcon, UsersIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import { Separator } from '@/components/atoms/separator';
+import Link from 'next/link';
 
 interface Props {
   list: Partial<
     Division & {
+      cabinet: {
+        slug: string;
+      };
       _count: {
         programs: number;
         members: number;
@@ -34,15 +38,22 @@ const DivisionList = ({ list }: Props) => {
 
   return (
     <>
-      <div className="mb-12 text-center">
-        <p className="text-muted-foreground uppercase">Divisi kami</p>
-        <h1 className="typo-h1">Bersama Mewujudkan Tujuan</h1>
+      <div className="mb-12 flex flex-col items-center">
+        <div className="bg-primary rounded-t-lg px-3 pt-3">
+          <p className="typo-large bg-primary-foreground text-primary rounded-sm px-2 uppercase">
+            Divisi kami
+          </p>
+        </div>
+
+        <h1 className="typo-h1 bg-primary w-fit rounded-lg p-3">
+          Bersama Mewujudkan Tujuan
+        </h1>
       </div>
 
       <Carousel
         plugins={[
           Autoplay({
-            delay: 2000,
+            delay: 4000,
           }),
         ]}
       >
@@ -68,9 +79,11 @@ const DivisionList = ({ list }: Props) => {
                   </small>
                   <div className="bg-card shadow-primary absolute top-0 left-1/2 -z-10 h-full -translate-x-1/2 rounded-md transition-all group-hover:w-2/3 group-hover:scale-y-200 group-hover:shadow-lg"></div>
                 </div>
-                <Button variant={'outline'}>
-                  Selengkapnya{' '}
-                  <ArrowRightIcon className="transition-all group-hover:-rotate-45" />
+                <Button variant={'outline'} asChild>
+                  <Link href={`${dat.cabinet?.slug}/divisi/${dat.slug}`}>
+                    Selengkapnya{' '}
+                    <ArrowRightIcon className="transition-all group-hover:-rotate-45" />
+                  </Link>
                 </Button>
               </div>
             </CarouselItem>
@@ -86,7 +99,7 @@ const DivisionList = ({ list }: Props) => {
         <div className="relative flex items-end gap-3">
           <UsersIcon
             size={120}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5"
+            className="text-primary absolute top-1/2 left-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 opacity-50"
           />
           <h1 className="typo-h1 !text-8xl">{stats.members}</h1>
           <p className="typo-lead text-muted-foreground pb-3">Anggota aktif</p>
@@ -94,7 +107,7 @@ const DivisionList = ({ list }: Props) => {
         <div className="relative flex items-end gap-3">
           <ClipboardListIcon
             size={120}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5"
+            className="text-primary absolute top-1/2 left-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 opacity-50"
           />
           <h1 className="typo-h1 !text-8xl">{stats.programs}</h1>
           <p className="typo-lead text-muted-foreground pb-3">Program kerja</p>

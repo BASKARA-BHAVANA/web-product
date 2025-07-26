@@ -17,6 +17,9 @@ export async function getHomePageData({ cabinetSlug }: getHomePageDataProps) {
       include: {
         divisions: {
           include: {
+            cabinet: {
+              select: { slug: true },
+            },
             _count: {
               select: { members: true, programs: true },
             },
