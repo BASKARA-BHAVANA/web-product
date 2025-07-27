@@ -169,6 +169,14 @@
   .typo-muted {
     @apply text-muted-foreground text-sm;
   }
+
+  .ql-toolbar {
+    @apply !border-input bg-secondary rounded-t-sm shadow-none;
+  }
+
+  .ql-container {
+    @apply !border-input min-h-64 rounded-b-sm shadow-none;
+  }
 }
 
 @layer base {

@@ -3,7 +3,6 @@ import { ActionFailed } from './action-result';
 import { PrismaClientKnownRequestError } from '@/generated/prisma/runtime/library';
 
 const buildActionFailed = (error: unknown): ActionFailed => {
-  console.log(error);
   if (error instanceof ActionFailed) return error;
 
   let message = 'Terjadi kesalahan';

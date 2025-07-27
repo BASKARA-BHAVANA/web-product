@@ -25,7 +25,7 @@ export default async function Layout({
       <AdminSidebar />
       <SidebarInset>
         <SidebarTrigger className="absolute top-2 left-0" />
-        <div className="bg-background flex flex-1 flex-col gap-4 p-4 pt-12">
+        <div className="bg-background flex max-w-7xl flex-1 flex-col gap-4 p-4 pt-12">
           {children}
         </div>
       </SidebarInset>

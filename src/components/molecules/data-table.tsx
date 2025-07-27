@@ -349,7 +349,7 @@ const DataTable = <T,>({
           </div>
         </>
       )}
-      <Card className={cn('relative mb-4 py-2', loading ? 'min-h-40' : '')}>
+      <Card className={cn('relative mb-4 py-2', loading ? 'min-h-24' : '')}>
         {loading && (
           <div className="bg-background/60 absolute top-0 left-0 z-10 flex h-full w-full">
             <div className="bg-primary border-primary-foreground m-auto flex items-center gap-3 rounded-lg border p-3">
