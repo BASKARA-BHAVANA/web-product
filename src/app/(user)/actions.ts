@@ -42,3 +42,48 @@ export async function getHomePageData({ cabinetSlug }: getHomePageDataProps) {
     return buildActionFailed(err).toPlain();
   }
 }
+
+export interface getDivisionPageProps {
+  cabinetSlug: string;
+  divisionSlug: string;
+}
+
+export async function getDivisionPageData({
+  cabinetSlug,
+  divisionSlug,
+}: getDivisionPageProps) {
+  try {
+    const { programs, members, ...division } =
+      await prisma.division.findFirstOrThrow({
+        where: {
+          slug: divisionSlug,
+          cabinet: { slug: cabinetSlug },
+        },
+        include: {
+          cabinet: {
+            select: { id: true, slug: true, name: true },
+          },
+          members: true,
+          programs: {
+            select: {
+              id: true,
+              slug: true,
+              title: true,
+              startDate: true,
+              endDate: true,
+              picture: true,
+              description: true,
+            },
+          },
+        },
+      });
+
+    return new ActionSuccess('Berhasil', {
+      division,
+      programs,
+      members,
+    }).toPlain();
+  } catch (err) {
+    return buildActionFailed(err).toPlain();
+  }
+}
