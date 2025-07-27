@@ -18,6 +18,7 @@ import DivisionList from './_components/division-list';
 import ZoomOutImage from '@/components/molecules/zoomout-image';
 import VisionMissions from './_components/vision-missions';
 import WorkProgramList from './_components/workprogram-list';
+import ContactList from './_components/contact-list';
 
 const View = ({
   data,
@@ -98,6 +99,14 @@ const View = ({
       {/* PINNED WORK PROGRAMS  */}
       <Container className="py-24">
         <WorkProgramList programs={data.cabinet.programs} />
+      </Container>
+
+      {/* SEcONDARY IMAGE  */}
+      <ZoomOutImage src={data.cabinet.secondaryImage} />
+
+      {/* CONTACT  */}
+      <Container className="py-24">
+        <ContactList contacts={data.cabinet.contacts} />
       </Container>
     </>
   );
