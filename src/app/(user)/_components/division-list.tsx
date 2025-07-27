@@ -40,8 +40,8 @@ const DivisionList = ({ list }: Props) => {
     <>
       <div className="mb-12 flex flex-col items-center">
         <div className="bg-primary rounded-t-lg px-3 pt-3">
-          <p className="typo-large bg-primary-foreground text-primary rounded-sm px-2 uppercase">
-            Divisi kami
+          <p className="typo-large bg-primary-foreground text-primary rounded-sm px-2">
+            Divisi Kami
           </p>
         </div>
 

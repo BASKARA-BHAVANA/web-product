@@ -16,6 +16,7 @@ import {
 import { useRouter } from 'next/navigation';
 import DivisionList from './_components/division-list';
 import ZoomOutImage from '@/components/molecules/zoomout-image';
+import VisionMissions from './_components/vision-missions';
 
 const View = ({
   data,
@@ -83,6 +84,14 @@ const View = ({
       {/* DIVISIONS  */}
       <Container className="py-24">
         <DivisionList list={data.cabinet.divisions} />
+      </Container>
+
+      {/* VISION MISSION  */}
+      <Container className="py-24">
+        <VisionMissions
+          vision={data.cabinet.vision}
+          missions={data.cabinet.mission.split('\n')}
+        />
       </Container>
     </>
   );
