@@ -50,9 +50,12 @@ model User {
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
+
+  role          Role           @default(USER)
+  profile       Profile?
   accounts      Account[]
   sessions      Session[]
-  role          Role      @default(USER)
+  formResponses FormResponse[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -125,6 +128,7 @@ model Division {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
+  @@unique([cabinetId, name])
   @@map("divisions")
 }
 
@@ -163,5 +167,189 @@ model WorkProgram {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
+  @@unique([divisionId, cabinetId, title])
   @@map("work_programs")
+}
+
+// PROFILING
+model Profile {
+  id           String    @id @default(uuid())
+  userId       String    @unique @map("user_id")
+  firstName    String?   @map("first_name")
+  lastName     String?   @map("last_name")
+  phoneNumber  String?   @map("phone_number")
+  birthDate    DateTime? @map("birth_date")
+  sex          String?
+  province     String?
+  city         String?
+  district     String?
+  village      String?
+  nim          String?
+  classYear    String?   @map("class_year")
+  studyLevel   String?   @map("study_level")
+  studyProgram String?   @map("study_program")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+model ProfileGroup {
+  id           String  @id @default(uuid())
+  title        String  @unique
+  birthDate    String? @map("birth_date") @db.Text
+  sex          String?
+  province     String? @db.Text
+  city         String? @db.Text
+  district     String? @db.Text
+  village      String? @db.Text
+  classYear    String? @map("class_year") @db.Text
+  studyLevel   String? @map("study_level") @db.Text
+  studyProgram String? @map("study_program") @db.Text
+
+  courses Course[]
+  events  Event[]
+  forms   Form[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("profile_groups")
+}
+
+// LEARNING MATERIAL
+model Course {
+  id       String  @id @default(uuid())
+  parentId String? @map("parent_id")
+  title    String  @unique
+  slug     String  @unique
+  file     String
+  content  String? @db.MediumText
+  tags     String? @db.Text
+
+  parent   Course?        @relation("CourseToParent", fields: [parentId], references: [id])
+  children Course[]       @relation("CourseToParent")
+  groups   ProfileGroup[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("courses")
+}
+
+// EVENTS
+model Event {
+  id        String    @id @default(uuid())
+  title     String    @unique
+  slug      String    @unique
+  image     String?
+  location  String?
+  longlat   String?
+  content   String?   @db.MediumText
+  startDate DateTime? @map("start_date")
+  endDate   DateTime? @map("end_date")
+  isActive  Boolean   @default(true) @map("is_active")
+
+  groups ProfileGroup[]
+  forms  Form[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("events")
+}
+
+// NEWS
+model News {
+  id      String  @id @default(uuid())
+  title   String  @unique
+  slug    String  @unique
+  content String  @db.MediumText
+  author  String?
+  tags    String? @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("news")
+}
+
+// FORM 
+model Form {
+  id          String  @id @default(uuid())
+  title       String  @unique
+  slug        String  @unique
+  description String? @db.Text
+
+  questions FormQuestion[]
+  responses FormResponse[]
+  groups    ProfileGroup[]
+  events    Event[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("forms")
+}
+
+model FormResponse {
+  id     String  @id @default(uuid())
+  userId String? @map("user_id")
+  formId String? @map("form_id")
+  status String  @default("draft")
+
+  user    User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  form    Form?        @relation(fields: [formId], references: [id], onDelete: SetNull)
+  answers FormAnswer[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("form_responses")
+}
+
+model FormQuestion {
+  id       Int      @id @default(autoincrement())
+  formId   String   @map("form_id")
+  label    String
+  name     String
+  type     String
+  hint     String?
+  other    Boolean?
+  required Boolean?
+
+  form    Form                 @relation(fields: [formId], references: [id], onDelete: Cascade)
+  options FormQuestionOption[]
+  answers FormAnswer[]
+
+  @@map("form_questions")
+}
+
+model FormQuestionOption {
+  id         Int    @id @default(autoincrement())
+  questionId Int    @map("question_id")
+  label      String
+  value      String
+
+  question FormQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("form_question_options")
+}
+
+model FormAnswer {
+  id         Int       @id @default(autoincrement())
+  responseId String    @map("response_id")
+  questionId Int?      @map("question_id")
+  text       String?
+  number     Float?
+  date       DateTime?
+  longText   String?   @map("long_text") @db.MediumText
+
+  response FormResponse  @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  question FormQuestion? @relation(fields: [questionId], references: [id], onDelete: SetNull)
+
+  @@map("form_answers")
 }
