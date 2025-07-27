@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import DivisionList from './_components/division-list';
 import ZoomOutImage from '@/components/molecules/zoomout-image';
 import VisionMissions from './_components/vision-missions';
+import WorkProgramList from './_components/workprogram-list';
 
 const View = ({
   data,
@@ -92,6 +93,11 @@ const View = ({
           vision={data.cabinet.vision}
           missions={data.cabinet.mission.split('\n')}
         />
+      </Container>
+
+      {/* PINNED WORK PROGRAMS  */}
+      <Container className="py-24">
+        <WorkProgramList programs={data.cabinet.programs} />
       </Container>
     </>
   );

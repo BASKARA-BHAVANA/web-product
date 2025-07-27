@@ -26,6 +26,30 @@ export async function getHomePageData({ cabinetSlug }: getHomePageDataProps) {
           },
         },
         contacts: true,
+        programs: {
+          where: { isPinned: true },
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            isPinned: true,
+            picture: true,
+            division: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+            cabinet: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
       },
     });
 
