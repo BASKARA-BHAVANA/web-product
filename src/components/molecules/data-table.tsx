@@ -51,6 +51,7 @@ import {
 import { Separator } from '../atoms/separator';
 import { Card } from '../atoms/card';
 import InputSearch from './input-search';
+import { cn } from '@/utils/misc';
 
 interface FilterProps {
   type: 'search' | 'radio' | 'checkbox';
@@ -348,10 +349,13 @@ const DataTable = <T,>({
           </div>
         </>
       )}
-      <Card className="relative mb-4 py-2">
+      <Card className={cn('relative mb-4 py-2', loading ? 'min-h-40' : '')}>
         {loading && (
           <div className="bg-background/60 absolute top-0 left-0 z-10 flex h-full w-full">
-            <LoaderIcon className="text-primary m-auto animate-spin" />
+            <div className="bg-primary border-primary-foreground m-auto flex items-center gap-3 rounded-lg border p-3">
+              <LoaderIcon className="text-primary-foreground animate-spin" />
+              <p className="typo-p">Loading...</p>
+            </div>
           </div>
         )}
         <Table>

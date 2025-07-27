@@ -10,12 +10,18 @@ import React, {
 import { Button } from '@/components/atoms/button';
 import { Edit2Icon, PlusIcon, Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
-import { deleteCabinet, getCabinets, getCabinetsProps } from './actions';
+import {
+  deleteCabinet,
+  getCabinets,
+  getCabinetsProps,
+  updateCabinet,
+} from './actions';
 import { toast } from 'sonner';
 import DataTable from '@/components/molecules/data-table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/atoms/avatar';
 import { getInitials } from '@/utils/string';
 import { useRouter } from 'next/navigation';
+import { Switch } from '@/components/atoms/switch';
 
 const Page = () => {
   const router = useRouter();
@@ -56,12 +62,26 @@ const Page = () => {
     }
   }, [remove]);
 
+  // update active
+  const [activate, putActivate, activateLoading] = useActionState(
+    (_: unknown, { id, isActive }: { id: string; isActive: boolean }) =>
+      updateCabinet(id, { isActive }),
+    { message: '' }
+  );
+
+  useEffect(() => {
+    if (activate.status) {
+      toast[activate.status](activate.message);
+      if (activate.status === 'success') _getResult();
+    }
+  }, [activate]);
+
   return (
     <div>
       <h1 className="typo-h1 mb-4 grow">Kabinet</h1>
 
       <DataTable
-        loading={listLoading || removeLoading}
+        loading={listLoading || removeLoading || activateLoading}
         data={list.data?.items ?? []}
         filters={[
           {
@@ -99,12 +119,23 @@ const Page = () => {
                   <p className="typo-p truncate">{row.original.name}</p>
                   <span className="typo-small text-muted-foreground">
                     {row.original.periode}{' '}
-                    {row.original.isActive && (
-                      <span className="typo-small text-green-500">AKTIF</span>
-                    )}
                   </span>
                 </div>
               </div>
+            ),
+          },
+          {
+            key: 'isActive',
+            label: 'Aktif',
+            cell: ({ row }) => (
+              <Switch
+                checked={row.original.isActive}
+                onCheckedChange={(s) =>
+                  startTransition(() =>
+                    putActivate({ id: row.original.id, isActive: s })
+                  )
+                }
+              />
             ),
           },
           {
