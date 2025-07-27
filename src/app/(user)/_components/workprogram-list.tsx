@@ -5,13 +5,14 @@ import { ArrowUpRightIcon } from 'lucide-react';
 import Link from 'next/link';
 
 interface Props {
+  cabinetSlug: string;
   programs: (Pick<WorkProgram, 'title' | 'slug' | 'picture' | 'isPinned'> & {
     division: Pick<Division, 'name' | 'slug'> | null;
     cabinet: Pick<Cabinet, 'slug'> | null;
   })[];
 }
 
-const WorkProgramList = ({ programs }: Props) => {
+const WorkProgramList = ({ cabinetSlug, programs }: Props) => {
   return (
     <>
       <div className="mb-12 flex flex-wrap items-center justify-between gap-3">
@@ -27,7 +28,7 @@ const WorkProgramList = ({ programs }: Props) => {
         </div>
 
         <Button variant={'ghost'} asChild>
-          <Link href={`/${''}/program-kerja`}>
+          <Link href={`/${cabinetSlug}/program-kerja`}>
             Program lainnya <ArrowUpRightIcon />
           </Link>
         </Button>

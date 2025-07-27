@@ -111,3 +111,80 @@ export async function getDivisionPageData({
     return buildActionFailed(err).toPlain();
   }
 }
+
+export interface getWorkProgramsPageProps {
+  cabinetSlug: string;
+  page: number;
+  limit: number;
+  search?: string;
+}
+
+export async function getWorkProgramsPageData({
+  cabinetSlug,
+  page,
+  limit,
+  search,
+}: getWorkProgramsPageProps) {
+  try {
+    const cabinet = await prisma.cabinet.findUniqueOrThrow({
+      where: { slug: cabinetSlug },
+      select: {
+        name: true,
+      },
+    });
+
+    const where = {
+      cabinet: {
+        slug: cabinetSlug,
+      },
+      ...(search && {
+        OR: [
+          { title: { contains: search } },
+          { division: { name: { contains: search } } },
+        ],
+      }),
+    };
+    const programs = await prisma.workProgram.findMany({
+      where,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        isPinned: true,
+        picture: true,
+        division: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        cabinet: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    const count = await prisma.workProgram.count({ where });
+
+    return new ActionSuccess('Berhasil', {
+      cabinet,
+      programs,
+      count,
+      page,
+      limit,
+      search,
+    }).toPlain();
+  } catch (err) {
+    return buildActionFailed(err).toPlain();
+  }
+}

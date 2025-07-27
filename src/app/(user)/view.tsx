@@ -98,7 +98,10 @@ const View = ({
 
       {/* PINNED WORK PROGRAMS  */}
       <Container className="py-24">
-        <WorkProgramList programs={data.cabinet.programs} />
+        <WorkProgramList
+          cabinetSlug={data.cabinet.slug}
+          programs={data.cabinet.programs}
+        />
       </Container>
 
       {/* SEcONDARY IMAGE  */}

@@ -69,7 +69,7 @@ const DivisionList = ({ list }: Props) => {
                     width={500}
                     height={500}
                     alt=""
-                    className="w-1/2 transition-all group-hover:scale-125 group-hover:-rotate-12"
+                    className="w-1/2 drop-shadow-lg transition-all group-hover:scale-125 group-hover:-rotate-12"
                   />
                 )}
                 <div className="relative w-full text-center">
