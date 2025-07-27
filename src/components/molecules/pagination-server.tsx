@@ -77,7 +77,7 @@ const EllipsisPagination: React.FC<PaginationProps> = ({
   const changePage = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', newPage.toString());
-    router.push(`?${params.toString()}`);
+    router.replace(`?${params.toString()}`);
   };
 
   return (

@@ -2,17 +2,19 @@ import { Button } from '@/components/atoms/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/atoms/sheet';
 import BrandLogo from '@/components/molecules/brand-logo';
 import Container from '@/components/molecules/container';
-import {
-  BookOpenTextIcon,
-  CalendarFoldIcon,
-  MenuIcon,
-  ShieldUserIcon,
-  UserIcon,
-} from 'lucide-react';
+import { MenuIcon, ShieldIcon, UserIcon } from 'lucide-react';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]/route';
 import Footer from './_components/footer';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/atoms/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/atoms/avatar';
+import { getInitials } from '@/utils/string';
 
 const Navs = async () => {
   const session = await getServerSession(authOptions);
@@ -20,33 +22,40 @@ const Navs = async () => {
   return (
     <>
       <Button variant={'ghost'} asChild>
-        <Link href={'materi-belajar'}>
-          <BookOpenTextIcon />
-          Materi belajar
-        </Link>
+        <Link href={'berita'}>Berita</Link>
       </Button>
       <Button variant={'ghost'} asChild>
-        <Link href={'event'}>
-          <CalendarFoldIcon />
-          Event
-        </Link>
+        <Link href={'acara'}>Acara</Link>
+      </Button>
+      <Button variant={'ghost'} asChild>
+        <Link href={'materi-belajar'}>Materi belajar</Link>
       </Button>
       {session?.user != null && (
-        <Button variant={'ghost'} asChild>
-          <Link href={'profil'}>
-            <UserIcon />
-            Profil
-          </Link>
-        </Button>
-      )}
-      {(session?.user.role == 'ADMIN' ||
-        session?.user.role == 'SUPERADMIN') && (
-        <Button variant={'ghost'} asChild>
-          <Link href={'admin'}>
-            <ShieldUserIcon />
-            Admin
-          </Link>
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="size-10 cursor-pointer">
+              <AvatarImage src={session.user.image ?? ''} />
+              <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem asChild>
+              <Link href={'profil'}>
+                <UserIcon />
+                Profil
+              </Link>
+            </DropdownMenuItem>
+            {(session?.user.role == 'ADMIN' ||
+              session?.user.role == 'SUPERADMIN') && (
+              <DropdownMenuItem asChild>
+                <Link href={'admin'}>
+                  <ShieldIcon />
+                  Admin
+                </Link>
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
     </>
   );
@@ -70,7 +79,7 @@ export default async function Layout({
           <div className="grow"></div>
 
           {/* (tablet, desktop) navs  */}
-          <div className="hidden gap-4 sm:flex">
+          <div className="hidden items-center gap-4 sm:flex">
             <Navs />
           </div>
 
