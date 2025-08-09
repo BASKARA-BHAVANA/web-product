@@ -53,7 +53,7 @@ const Page = () => {
           </Link>
         </div>
         <div className="group grow">
-          <Link href={'materi-belajar/struktur'}>
+          <Link href={'materi-belajar/struktur/0'}>
             <Card className="group-hover:bg-primary group-hover:border-primary-foreground transition-all group-hover:border-2">
               <CardHeader>
                 <FolderTreeIcon

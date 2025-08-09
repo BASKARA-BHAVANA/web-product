@@ -73,4 +73,42 @@ const CourseCardSlim = ({ course }: CourseCardSlimProps) => {
   );
 };
 
-export { CourseCardDefault, CourseCardSlim };
+interface CourseCardCompactProps {
+  course: Pick<Course, 'id' | 'title' | 'slug' | 'tags'>;
+  prevSlugs: string[];
+}
+
+const CourseCardCompact = ({ course, prevSlugs }: CourseCardCompactProps) => {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="line-clamp-2">{course.title}</CardTitle>
+        <CardDescription>
+          <div className="mt-3 flex flex-wrap gap-3">
+            {course.tags?.split(';').map((tag, i) => (
+              <Badge variant={'secondary'} key={i}>
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        </CardDescription>
+        <CardAction>
+          <div className="flex gap-3">
+            <Button asChild>
+              <Link href={`/materi-belajar/buka/${course.slug}`}>Buka</Link>
+            </Button>
+            <Button variant={'secondary'} asChild>
+              <Link
+                href={`/materi-belajar/struktur/${[...prevSlugs, course.slug].join('/')}`}
+              >
+                <ChevronRightIcon />
+              </Link>
+            </Button>
+          </div>
+        </CardAction>
+      </CardHeader>
+    </Card>
+  );
+};
+
+export { CourseCardDefault, CourseCardSlim, CourseCardCompact };

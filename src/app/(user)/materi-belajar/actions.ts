@@ -1,5 +1,6 @@
 'use server';
 
+import { Course } from '@/generated/prisma';
 import { buildActionFailed } from '@/lib/actions/action-failed-builder';
 import { ActionSuccess } from '@/lib/actions/action-result';
 import { prisma } from '@/lib/prisma';
@@ -58,9 +59,11 @@ export async function exploreCourses({
 }: exploreCoursesProps) {
   try {
     const where = {
-      ...(parentSlug && {
-        parent: { slug: parentSlug },
-      }),
+      ...(parentSlug
+        ? {
+            parent: { slug: parentSlug },
+          }
+        : { parentId: null }),
     };
 
     const items = await prisma.course.findMany({
@@ -97,6 +100,38 @@ export async function detailCourse(slug: string) {
     });
 
     return new ActionSuccess('success', { item }).toPlain();
+  } catch (error) {
+    return buildActionFailed(error).toPlain();
+  }
+}
+
+export interface getCourseParentsProps {
+  slug: string;
+}
+
+export async function getCourseParents({ slug }: getCourseParentsProps) {
+  try {
+    const items: Pick<Course, 'id' | 'title' | 'slug'>[] = [];
+
+    let parentSlug: string | undefined = slug;
+    do {
+      // @ts-ignore
+      const data = await prisma.course.findUniqueOrThrow({
+        where: { slug: parentSlug },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          parent: {
+            select: { slug: true },
+          },
+        },
+      });
+      items.unshift(data);
+      parentSlug = data.parent?.slug;
+    } while (parentSlug);
+
+    return new ActionSuccess('Succes', { items }).toPlain();
   } catch (error) {
     return buildActionFailed(error).toPlain();
   }
