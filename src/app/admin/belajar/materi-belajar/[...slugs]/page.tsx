@@ -172,7 +172,9 @@ const Page = ({ params }: { params: Promise<{ slugs: string[] }> }) => {
             icon: ChevronsRightIcon,
             label: 'Masuk',
             onClick: (data) => {
-              router.push(`${[...slugs, data.slug].join('/')}`);
+              router.push(
+                `/admin/belajar/materi-belajar/${[...slugs, data.slug].join('/')}`
+              );
             },
           },
         ]}

@@ -69,7 +69,11 @@ export async function getCoursesTitle({ slugs }: getCoursesTitleProps) {
       select: { title: true, slug: true, id: true },
     });
 
-    return new ActionSuccess('Success', { items }).toPlain();
+    const orderedItems = slugs
+      .map((slug) => items.find((item) => item.slug === slug))
+      .filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+    return new ActionSuccess('Success', { items: orderedItems }).toPlain();
   } catch (error) {
     return buildActionFailed(error).toPlain();
   }
