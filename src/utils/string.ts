@@ -22,3 +22,18 @@ export const isUUID = (value: string): boolean => {
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   return uuidRegex.test(value);
 };
+
+export function isURL(urlString: string, domain?: string): boolean {
+  try {
+    const url = new URL(urlString);
+
+    if (!domain) return true;
+
+    const hostname = url.hostname.toLowerCase();
+    const domainLower = domain.toLowerCase();
+
+    return hostname === domainLower || hostname.endsWith(`.${domainLower}`);
+  } catch {
+    return false;
+  }
+}

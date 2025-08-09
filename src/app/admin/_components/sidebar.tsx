@@ -101,7 +101,7 @@ const Menu: Menu[] = [
   {
     group: 'belajar',
     title: 'Materi belajar',
-    url: '/admin/belajar/materi-belajar',
+    url: '/admin/belajar/materi-belajar/0',
     roles: ['ADMIN', 'SUPERADMIN'],
     icon: LibraryIcon,
   },

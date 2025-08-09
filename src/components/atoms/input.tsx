@@ -9,6 +9,7 @@ function Input({
   error,
   className,
   type,
+  usePreview,
   filePreview,
   filePreviewClassName,
   hint,
@@ -18,13 +19,14 @@ function Input({
   label?: string;
   error?: string;
   hint?: string;
+  usePreview?: boolean;
   filePreview?: string;
   filePreviewClassName?: string;
 }) {
   return (
     <div className="grid items-center gap-1.5">
       {label && <Label htmlFor={props.name}>{label}</Label>}
-      {type == 'file' && (
+      {(type == 'file' || usePreview) && (
         <div
           className={cn(
             'bg-muted flex aspect-square w-full max-w-40 overflow-hidden rounded-sm',
