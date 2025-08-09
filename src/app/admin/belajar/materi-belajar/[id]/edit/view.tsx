@@ -1,56 +1,38 @@
 'use client';
 
-import { useFormik } from 'formik';
+import React from 'react';
+import { getCourse, getCourseParents, updateCourse } from '../../actions';
 import { useRouter } from 'next/navigation';
-import React, { startTransition, use, useActionState, useEffect } from 'react';
-import { CreateCourse, createCourseSchema } from '../model';
-import {
-  createCourse,
-  getCourseParents,
-  getCoursesTitle,
-  getCoursesTitleProps,
-} from '../actions';
+import { useFormik } from 'formik';
+import { UpdateCourse, updateCourseSchema } from '../../model';
 import { toast } from 'sonner';
+import { CornerDownRightIcon } from 'lucide-react';
+import { Badge } from '@/components/atoms/badge';
 import { Card, CardContent } from '@/components/atoms/card';
 import { Input } from '@/components/atoms/input';
 import { isURL } from '@/utils/string';
 import RichTextEditor from '@/components/molecules/richtext-editor';
 import { Button } from '@/components/atoms/button';
-import { CornerDownRightIcon } from 'lucide-react';
-import { Badge } from '@/components/atoms/badge';
 
-const Page = ({
-  searchParams,
+const View = ({
+  data,
 }: {
-  searchParams: Promise<{ parent?: string }>;
+  data: NonNullable<Awaited<ReturnType<typeof getCourse>>['data']>;
 }) => {
-  const { parent } = use(searchParams);
   const router = useRouter();
 
-  const [parentData, getParentData] = useActionState(
-    (_: unknown, props: getCoursesTitleProps) => getCoursesTitle(props),
-    { message: '' }
-  );
-
-  useEffect(() => {
-    if (parent)
-      startTransition(() => {
-        getParentData({ slugs: [parent] });
-      });
-  }, [parent]);
-
-  const form = useFormik<CreateCourse>({
+  const form = useFormik<UpdateCourse>({
     initialValues: {
-      title: '',
-      file: '',
-      content: '',
-      tags: [],
-      parentId: undefined,
+      title: data.title,
+      file: data.file,
+      content: data.content ?? '',
+      tags: data.tags?.split(';') ?? [],
+      parentId: data.parentId ?? undefined,
     },
-    validationSchema: createCourseSchema,
+    validationSchema: updateCourseSchema,
     onSubmit: async (val, { setSubmitting }) => {
       setSubmitting(true);
-      const { status, message } = await createCourse(val);
+      const { status, message } = await updateCourse(data.id, val);
       if (status) toast[status](message);
       if (status == 'success') {
         const parents = val.parentId
@@ -64,21 +46,17 @@ const Page = ({
     },
   });
 
-  useEffect(() => {
-    form.setFieldValue('parentId', parentData.data?.items.at(0)?.id);
-  }, [parentData]);
-
   return (
     <>
       <div className="mb-4">
-        <h1 className="typo-h1 grow">Tambah Materi</h1>
+        <h1 className="typo-h1 grow">Edit Materi</h1>
 
-        {parentData.data?.items.length != 0 && form.values.parentId && (
+        {data.parent && (
           <div className="me-2 mt-2 flex items-center gap-2">
             <CornerDownRightIcon className="text-muted-foreground" />
-            <p className="typo-p text-muted-foreground">ke materi</p>
+            <p className="typo-p text-muted-foreground">di materi</p>
             <Badge variant={'secondary'} className="cursor-pointer">
-              {parentData.data?.items.at(0)?.title}
+              {data?.parent?.title}
             </Badge>
           </div>
         )}
@@ -110,7 +88,7 @@ const Page = ({
               name="file"
               hint="Salin tautan /preview fail dari Google Drive. Pastikan fail memiliki akses publik"
               filePreview={
-                isURL(form.values.file, 'drive.google.com')
+                isURL(form.values.file ?? '', 'drive.google.com')
                   ? form.values.file
                   : ''
               }
@@ -137,4 +115,4 @@ const Page = ({
   );
 };
 
-export default Page;
+export default View;

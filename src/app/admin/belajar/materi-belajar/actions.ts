@@ -6,6 +6,7 @@ import { requireAuth } from '@/lib/actions/auth';
 import { prisma } from '@/lib/prisma';
 import { CreateCourse, UpdateCourse } from './model';
 import { toSlug } from '@/utils/string';
+import { Course } from '@/generated/prisma';
 
 export interface getCoursesProps {
   parentSlug?: string;
@@ -69,6 +70,31 @@ export async function getCoursesTitle({ slugs }: getCoursesTitleProps) {
     });
 
     return new ActionSuccess('Success', { items }).toPlain();
+  } catch (error) {
+    return buildActionFailed(error).toPlain();
+  }
+}
+
+export interface getCourseParentsProps {
+  id: string;
+}
+
+export async function getCourseParents({ id }: getCourseParentsProps) {
+  try {
+    const items: Pick<Course, 'id' | 'title' | 'slug'>[] = [];
+
+    let parentId: string | null = id;
+    do {
+      // @ts-ignore
+      const data = await prisma.course.findUniqueOrThrow({
+        where: { id: parentId },
+        select: { id: true, title: true, slug: true, parentId: true },
+      });
+      items.unshift(data);
+      parentId = data.parentId;
+    } while (parentId);
+
+    return new ActionSuccess('Succes', { items }).toPlain();
   } catch (error) {
     return buildActionFailed(error).toPlain();
   }

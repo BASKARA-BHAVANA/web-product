@@ -5,10 +5,8 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/atoms/breadcrumb';
-import { param } from 'motion/react-client';
 import { useRouter } from 'next/navigation';
 import {
   Fragment,
@@ -31,7 +29,7 @@ import DataTable from '@/components/molecules/data-table';
 import { Button } from '@/components/atoms/button';
 import Link from 'next/link';
 import {
-  ChevronRightIcon,
+  ChevronsRightIcon,
   Edit2Icon,
   PlusIcon,
   Trash2Icon,
@@ -153,7 +151,7 @@ const Page = ({ params }: { params: Promise<{ slugs: string[] }> }) => {
             icon: Edit2Icon,
             label: 'Edit',
             onClick: (data) => {
-              router.push(`acara/${data.id}/edit`);
+              router.push(`/admin/belajar/materi-belajar/${data.id}/edit`);
             },
           },
           {
@@ -171,7 +169,7 @@ const Page = ({ params }: { params: Promise<{ slugs: string[] }> }) => {
             },
           },
           {
-            icon: ChevronRightIcon,
+            icon: ChevronsRightIcon,
             label: 'Masuk',
             onClick: (data) => {
               router.push(`${[...slugs, data.slug].join('/')}`);
