@@ -68,9 +68,14 @@ export async function exploreCourses({
 
     const items = await prisma.course.findMany({
       where,
-      omit: {
-        file: true,
-        content: true,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        tags: true,
+        _count: {
+          select: { children: true },
+        },
       },
       take: limit,
       orderBy: { createdAt: 'desc' },

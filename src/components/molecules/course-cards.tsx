@@ -74,7 +74,11 @@ const CourseCardSlim = ({ course }: CourseCardSlimProps) => {
 };
 
 interface CourseCardCompactProps {
-  course: Pick<Course, 'id' | 'title' | 'slug' | 'tags'>;
+  course: Pick<Course, 'id' | 'title' | 'slug' | 'tags'> & {
+    _count?: {
+      children?: number;
+    };
+  };
   prevSlugs: string[];
 }
 
@@ -82,7 +86,11 @@ const CourseCardCompact = ({ course, prevSlugs }: CourseCardCompactProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="line-clamp-2">{course.title}</CardTitle>
+        <CardTitle className="line-clamp-2">
+          <Link href={`/materi-belajar/buka/${course.slug}`}>
+            {course.title}
+          </Link>
+        </CardTitle>
         <CardDescription>
           <div className="mt-3 flex flex-wrap gap-3">
             {course.tags?.split(';').map((tag, i) => (
@@ -93,18 +101,16 @@ const CourseCardCompact = ({ course, prevSlugs }: CourseCardCompactProps) => {
           </div>
         </CardDescription>
         <CardAction>
-          <div className="flex gap-3">
-            <Button asChild>
-              <Link href={`/materi-belajar/buka/${course.slug}`}>Buka</Link>
-            </Button>
-            <Button variant={'secondary'} asChild>
+          {course._count?.children != 0 && (
+            <Button variant={'ghost'} asChild>
               <Link
                 href={`/materi-belajar/struktur/${[...prevSlugs, course.slug].join('/')}`}
               >
+                {course._count?.children ?? 0} materi
                 <ChevronRightIcon />
               </Link>
             </Button>
-          </div>
+          )}
         </CardAction>
       </CardHeader>
     </Card>

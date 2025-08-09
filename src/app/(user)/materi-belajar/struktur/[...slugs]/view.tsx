@@ -55,6 +55,7 @@ const View = ({
               </BreadcrumbList>
             </Breadcrumb>
             <h1 className="typo-h1">{parents.items.at(-1)?.title}</h1>
+            <p className="typo-p text-muted-foreground mt-3">{count} materi</p>
           </>
         ) : (
           <HeroTitle />
