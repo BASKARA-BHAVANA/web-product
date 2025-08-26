@@ -1,7 +1,21 @@
+'use client';
+
 import 'react-quill-new/dist/quill.snow.css';
 import { useRef } from 'react';
-import ReactQuill from 'react-quill-new';
 import { Label } from '../atoms/label';
+import dynamic from 'next/dynamic';
+import type ReactQuill from 'react-quill-new';
+
+const QuillWrapper = dynamic(
+  async () => {
+    const { default: RQ } = await import('react-quill-new');
+    // eslint-disable-next-line react/display-name
+    return ({ ...props }) => <RQ {...props} />;
+  },
+  {
+    ssr: false,
+  }
+) as typeof ReactQuill;
 
 type Props = {
   label?: string;
@@ -33,7 +47,7 @@ const RichTextEditor = ({ label, error, value, onChange }: Props) => {
   return (
     <div className="grid items-center gap-1.5">
       {label && <Label>{label}</Label>}
-      <ReactQuill
+      <QuillWrapper
         ref={quillRef}
         value={value}
         onChange={onChange}

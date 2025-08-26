@@ -9,7 +9,6 @@ import {
   TableRow,
 } from '@/components/atoms/table';
 import { Card } from '@/components/atoms/card';
-import ActionResponseAlert from '@/components/molecules/action-response-alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/atoms/avatar';
 import { getInitials } from '@/utils/string';
 import PaginationBar from '@/components/molecules/pagination-bar';
@@ -42,7 +41,7 @@ const Page = async ({ searchParams }: Props) => {
     limit = 10,
   } = (await searchParams) ?? {};
 
-  const { data, count, error } = await getUsers({
+  const { data, count } = await getUsers({
     search: search,
     role: role,
     page: page,
@@ -60,8 +59,6 @@ const Page = async ({ searchParams }: Props) => {
           </Link>
         </Button>
       </div>
-
-      <ActionResponseAlert error={error} className="mb-4" />
 
       <form className="mb-4 flex flex-wrap gap-2">
         <div>

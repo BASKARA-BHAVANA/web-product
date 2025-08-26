@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db-uin-himatif
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+
+  web:
+    build: .
+    restart: unless-stopped
+    env_file: .env.production
+    depends_on:
+      - db
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./src/public/uploads:/app/public/uploads
+      - ./src/uploads:/app/src/uploads
+
+volumes:
+  db_data:
