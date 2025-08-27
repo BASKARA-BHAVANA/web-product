@@ -65,7 +65,7 @@ const View = ({
   return (
     <>
       <div className="mb-4">
-        <h1 className="typo-h1 grow">Tambah Kabinet</h1>
+        <h1 className="typo-h1 grow">Edit Divisi</h1>
       </div>
 
       <form onSubmit={form.handleSubmit} className="flex flex-col gap-4">

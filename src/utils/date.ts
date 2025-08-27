@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 export const formatTime = (
-  time: string | Date,
+  time: string | Date | null | undefined,
   format: string,
   {
     fb = '',
