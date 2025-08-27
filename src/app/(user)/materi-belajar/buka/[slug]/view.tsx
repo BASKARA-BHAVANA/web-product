@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/atoms/card';
-import { CornerDownLeftIcon, CornerLeftDownIcon } from 'lucide-react';
+import { CornerLeftDownIcon } from 'lucide-react';
 import Link from 'next/link';
 import { CourseCardSlim } from '@/components/molecules/course-cards';
 import { Button } from '@/components/atoms/button';

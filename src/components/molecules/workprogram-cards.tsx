@@ -40,13 +40,13 @@ const WorkProgramCardDefault = ({ program }: WorkProgramCardDefaultProps) => {
       <Card>
         <CardHeader className="pt-12">
           <CardTitle>{program.title}</CardTitle>
-          <CardDescription>{program.division?.name}</CardDescription>
+          <CardDescription>{program.division?.name ?? '-'}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex justify-between gap-3">
             <Button variant={'outline'} asChild>
               <Link
-                href={`/${program.cabinet?.slug}/program-kerja/${program.slug}`}
+                href={`/${program.cabinet?.slug ?? 'himatif'}/program-kerja/${program.slug}`}
               >
                 Selengkapnya{' '}
                 <ArrowRightIcon className="transition-all group-hover:-rotate-45" />

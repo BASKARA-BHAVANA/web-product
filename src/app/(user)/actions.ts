@@ -188,3 +188,36 @@ export async function getWorkProgramsPageData({
     return buildActionFailed(err).toPlain();
   }
 }
+
+export interface getWorkProgramPageProps {
+  workProgramSlug: string;
+}
+
+export async function getWorkProgramPageData({
+  workProgramSlug,
+}: getWorkProgramPageProps) {
+  try {
+    const { division, cabinet, ...workProgram } =
+      await prisma.workProgram.findFirstOrThrow({
+        where: {
+          slug: workProgramSlug,
+        },
+        include: {
+          cabinet: {
+            select: { id: true, name: true, logo: true },
+          },
+          division: {
+            select: { id: true, name: true, logo: true },
+          },
+        },
+      });
+
+    return new ActionSuccess('Berhasil', {
+      division,
+      cabinet,
+      workProgram,
+    }).toPlain();
+  } catch (err) {
+    return buildActionFailed(err).toPlain();
+  }
+}
