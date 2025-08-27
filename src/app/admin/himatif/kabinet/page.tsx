@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/atoms/avatar';
 import { getInitials } from '@/utils/string';
 import { useRouter } from 'next/navigation';
 import { Switch } from '@/components/atoms/switch';
+import { getUploaded } from '@/utils/misc';
 
 const Page = () => {
   const router = useRouter();
@@ -108,7 +109,7 @@ const Page = () => {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={row.original.logo ?? ''}
+                    src={getUploaded(row.original.logo)}
                     alt={row.original.name ?? ''}
                   />
                   <AvatarFallback className="rounded-lg">

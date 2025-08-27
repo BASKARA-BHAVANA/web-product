@@ -11,6 +11,7 @@ import {
 import { ArrowRightIcon, StarIcon } from 'lucide-react';
 import { Button } from '../atoms/button';
 import Link from 'next/link';
+import { getUploaded } from '@/utils/misc';
 
 interface WorkProgramCardDefaultProps {
   program: Pick<WorkProgram, 'title' | 'slug' | 'picture' | 'isPinned'> & {
@@ -28,7 +29,7 @@ const WorkProgramCardDefault = ({ program }: WorkProgramCardDefaultProps) => {
           ratio={3 / 2}
         >
           <Image
-            src={program.picture ?? ''}
+            src={getUploaded(program.picture)}
             width={1080}
             height={1080}
             alt=""

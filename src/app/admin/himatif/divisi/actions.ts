@@ -143,7 +143,7 @@ export async function updateDivision(
     const upLogo = logo
       ? await uploadFile(logo, {
           access: 'public',
-          baseFolder: 'himatif-logos',
+          baseFolder: 'division-logos',
         })
       : null;
     if (upLogo?.path) uploaded.push(upLogo.path);

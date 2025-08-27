@@ -13,6 +13,7 @@ import { ArrowRightIcon, ClipboardListIcon, UsersIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import { Separator } from '@/components/atoms/separator';
 import Link from 'next/link';
+import { getUploaded } from '@/utils/misc';
 
 interface Props {
   list: Partial<
@@ -65,7 +66,7 @@ const DivisionList = ({ list }: Props) => {
               <div className="group flex flex-col items-center gap-3 p-6 transition-all select-none">
                 {dat.logo && (
                   <Image
-                    src={dat.logo}
+                    src={getUploaded(dat.logo)}
                     width={500}
                     height={500}
                     alt=""

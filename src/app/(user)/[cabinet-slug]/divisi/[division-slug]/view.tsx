@@ -10,6 +10,7 @@ import {
 } from '@/components/atoms/card';
 import { VelocityScroll } from '@/components/atoms/magicui/scroll-based-velocity';
 import Container from '@/components/molecules/container';
+import { getUploaded } from '@/utils/misc';
 import {
   ArrowUpRightIcon,
   InstagramIcon,
@@ -30,7 +31,7 @@ const View = ({
       <Container className="flex flex-col gap-4 pb-24 lg:flex-row lg:items-center">
         <div className="aspect-square max-w-60 grow lg:max-w-sm">
           <Image
-            src={data.division.logo}
+            src={getUploaded(data.division.logo)}
             className="drop-shadow-foreground size-full object-contain drop-shadow-md"
             width={1080}
             height={1080}
@@ -76,7 +77,7 @@ const View = ({
               className="group flex flex-col items-center gap-3 p-6 transition-all select-none"
             >
               <Avatar className="size-40 origin-bottom transition-all group-hover:scale-110">
-                <AvatarImage src={dat.picture ?? ''} />
+                <AvatarImage src={getUploaded(dat.picture)} />
                 <AvatarFallback>{dat.fullName}</AvatarFallback>
               </Avatar>
               <div className="relative w-full text-center">

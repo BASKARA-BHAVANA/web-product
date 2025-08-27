@@ -21,6 +21,7 @@ import {
   CreateUpdateCabinet,
   updateCabinetSchema,
 } from '../../model';
+import { getUploaded } from '@/utils/misc';
 
 const View = ({
   data,
@@ -31,9 +32,9 @@ const View = ({
   const router = useRouter();
 
   const [previews, setPreviews] = useState<Record<string, string>>({
-    logo: logo ?? '',
-    primaryImage: primaryImage ?? '',
-    secondaryImage: secondaryImage ?? '',
+    logo: getUploaded(logo),
+    primaryImage: getUploaded(primaryImage),
+    secondaryImage: getUploaded(secondaryImage),
   });
   const form = useFormik<Partial<CreateUpdateCabinet>>({
     initialValues: {

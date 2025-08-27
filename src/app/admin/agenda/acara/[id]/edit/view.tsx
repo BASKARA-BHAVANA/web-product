@@ -21,6 +21,7 @@ import {
 import { formatTime } from '@/utils/date';
 import RichTextEditor from '@/components/molecules/richtext-editor';
 import { Switch } from '@/components/atoms/switch';
+import { getUploaded } from '@/utils/misc';
 
 const View = ({
   data,
@@ -31,7 +32,7 @@ const View = ({
   const router = useRouter();
 
   const [previews, setPreviews] = useState<Record<string, string>>({
-    image: image ?? '',
+    image: getUploaded(image),
   });
   const form = useFormik<UpdateEvent>({
     initialValues: {

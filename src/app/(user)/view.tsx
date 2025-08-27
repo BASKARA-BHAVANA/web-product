@@ -19,6 +19,7 @@ import ZoomOutImage from '@/components/molecules/zoomout-image';
 import VisionMissions from './_components/vision-missions';
 import WorkProgramList from './_components/workprogram-list';
 import ContactList from './_components/contact-list';
+import { getUploaded } from '@/utils/misc';
 
 const View = ({
   data,
@@ -37,7 +38,7 @@ const View = ({
       <Container className="flex flex-col gap-4 pb-24 lg:flex-row lg:items-center">
         <div className="aspect-square max-w-80 grow lg:max-w-xl">
           <Image
-            src={data.cabinet.logo}
+            src={getUploaded(data.cabinet.logo)}
             className="drop-shadow-foreground size-full object-contain drop-shadow-md"
             width={1080}
             height={1080}
@@ -81,7 +82,7 @@ const View = ({
       </Container>
 
       {/* PRIMARY IMAGE  */}
-      <ZoomOutImage src={data.cabinet.primaryImage} />
+      <ZoomOutImage src={getUploaded(data.cabinet.primaryImage)} />
 
       {/* DIVISIONS  */}
       <Container className="py-24">
@@ -105,7 +106,7 @@ const View = ({
       </Container>
 
       {/* SEcONDARY IMAGE  */}
-      <ZoomOutImage src={data.cabinet.secondaryImage} />
+      <ZoomOutImage src={getUploaded(data.cabinet.secondaryImage)} />
 
       {/* CONTACT  */}
       <Container className="py-24">

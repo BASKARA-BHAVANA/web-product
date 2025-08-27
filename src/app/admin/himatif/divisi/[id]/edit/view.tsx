@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { getCabinets, getDivision, updateDivision } from '../../actions';
 import { CreateUpdateDivision, updateDivisionSchema } from '../../model';
+import { getUploaded } from '@/utils/misc';
 
 const View = ({
   data,
@@ -32,7 +33,7 @@ const View = ({
   const router = useRouter();
 
   const [previews, setPreviews] = useState<Record<string, string>>({
-    logo: logo ?? '',
+    logo: getUploaded(logo),
   });
   const form = useFormik<Partial<CreateUpdateDivision>>({
     initialValues: {

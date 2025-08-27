@@ -7,7 +7,7 @@ export type FileAccess = 'public' | 'private';
 
 export async function uploadFile(
   file: File,
-  options?: { access: FileAccess; baseFolder?: string }
+  options: { access: FileAccess; baseFolder?: string }
 ) {
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -15,8 +15,8 @@ export async function uploadFile(
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
 
-    const folder = options?.access === 'public' ? 'public/uploads' : 'uploads';
-    const baseFolder = options?.baseFolder ?? '';
+    const folder = `uploads/${options.access}`;
+    const baseFolder = options.baseFolder ?? '';
     const subfolder = path.join(folder, baseFolder, year.toString(), month);
     const filename = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
     const fullPath = path.join(process.cwd(), subfolder, filename);
@@ -30,12 +30,8 @@ export async function uploadFile(
       month,
       filename
     );
-    const publicPath =
-      options?.access === 'public'
-        ? `/uploads/${relativePath}`
-        : `/${relativePath}`;
 
-    return { path: publicPath };
+    return { path: `/${options.access}/${relativePath}` };
   } catch (error) {
     return { error };
   }
@@ -43,8 +39,7 @@ export async function uploadFile(
 
 export async function deleteFile(filePath: string) {
   try {
-    const baseFolder = filePath.startsWith('/uploads') ? 'public' : 'uploads';
-    const fullPath = path.join(process.cwd(), baseFolder, filePath);
+    const fullPath = path.join(process.cwd(), 'uploads', filePath);
     await fs.unlink(fullPath);
 
     return { success: true };
@@ -58,10 +53,7 @@ export async function deleteFiles(filePaths: string[]) {
   await Promise.allSettled(
     filePaths.map(async (filePath) => {
       try {
-        const baseFolder = filePath.startsWith('/uploads')
-          ? 'public'
-          : 'uploads';
-        const fullPath = path.join(process.cwd(), baseFolder, filePath);
+        const fullPath = path.join(process.cwd(), 'uploads', filePath);
         await fs.unlink(fullPath);
       } catch (error) {
         console.error(error);
