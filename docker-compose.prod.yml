@@ -11,7 +11,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - '3213:5432' 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U app -d db_uin_himatif"]
       timeout: 20s
@@ -31,7 +31,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - '3000:3000'
+      - '3212:3000'
     volumes:
       - ./uploads:/app/uploads
     deploy:

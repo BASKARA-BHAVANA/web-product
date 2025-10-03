@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -21,12 +21,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -85,9 +85,9 @@ model Cabinet {
   onPrimaryColor String? @map("on_primary_color")
   primaryImage   String  @map("primary_image")
   secondaryImage String  @map("secondary_image")
-  description    String  @db.Text
-  vision         String  @db.Text
-  mission        String  @db.Text
+  description    String
+  vision         String
+  mission        String
   isActive       Boolean @default(false) @map("is_active")
 
   divisions Division[]
@@ -120,7 +120,7 @@ model Division {
   name        String
   tagline     String
   logo        String
-  description String @db.Text
+  description String
 
   cabinet  Cabinet          @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
   members  DivisionMember[]
@@ -156,8 +156,8 @@ model WorkProgram {
   title       String
   slug        String
   picture     String?
-  description String?   @db.Text
-  content     String?   @db.LongText
+  description String?
+  content     String?
   startDate   DateTime? @map("start_date")
   endDate     DateTime? @map("end_date")
   isPinned    Boolean   @default(false) @map("is_pinned")
@@ -201,15 +201,15 @@ model Profile {
 model ProfileGroup {
   id           String  @id @default(uuid())
   title        String  @unique
-  birthDate    String? @map("birth_date") @db.Text
+  birthDate    String? @map("birth_date")
   sex          String?
-  province     String? @db.Text
-  city         String? @db.Text
-  district     String? @db.Text
-  village      String? @db.Text
-  classYear    String? @map("class_year") @db.Text
-  studyLevel   String? @map("study_level") @db.Text
-  studyProgram String? @map("study_program") @db.Text
+  province     String?
+  city         String?
+  district     String?
+  village      String?
+  classYear    String? @map("class_year")
+  studyLevel   String? @map("study_level")
+  studyProgram String? @map("study_program")
 
   courses Course[]
   events  Event[]
@@ -228,8 +228,8 @@ model Course {
   title    String  @unique
   slug     String  @unique
   file     String
-  content  String? @db.MediumText
-  tags     String? @db.Text
+  content  String?
+  tags     String?
 
   parent   Course?        @relation("CourseToParent", fields: [parentId], references: [id])
   children Course[]       @relation("CourseToParent")
@@ -249,7 +249,7 @@ model Event {
   image     String?
   location  String?
   longlat   String?
-  content   String?   @db.MediumText
+  content   String?
   startDate DateTime? @map("start_date")
   endDate   DateTime? @map("end_date")
   isActive  Boolean   @default(true) @map("is_active")
@@ -268,9 +268,9 @@ model News {
   id      String  @id @default(uuid())
   title   String  @unique
   slug    String  @unique
-  content String  @db.MediumText
+  content String
   author  String?
-  tags    String? @db.Text
+  tags    String?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -283,7 +283,7 @@ model Form {
   id          String  @id @default(uuid())
   title       String  @unique
   slug        String  @unique
-  description String? @db.Text
+  description String?
 
   questions FormQuestion[]
   responses FormResponse[]
@@ -347,7 +347,7 @@ model FormAnswer {
   text       String?
   number     Float?
   date       DateTime?
-  longText   String?   @map("long_text") @db.MediumText
+  longText   String?   @map("long_text")
 
   response FormResponse  @relation(fields: [responseId], references: [id], onDelete: Cascade)
   question FormQuestion? @relation(fields: [questionId], references: [id], onDelete: SetNull)
