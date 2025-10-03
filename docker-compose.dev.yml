@@ -3,6 +3,7 @@
 services:
   db:
     image: postgres:15-alpine
+    container_name: himatif-db-dev
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-db_uin_himatif}
@@ -25,6 +26,7 @@ services:
 
   web:
     build: .
+    container_name: himatif-web-dev
     restart: unless-stopped
     env_file: .env.production
     depends_on:

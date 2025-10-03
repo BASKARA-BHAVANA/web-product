@@ -23,3 +23,8 @@ docker-compose -f docker-compose.prod.yml ps
 echo "Production deployment completed!"
 echo "Application will be available at: http://194.233.91.96:3212"
 echo "Database will be available at: 194.233.91.96:3213"
+echo ""
+echo "Container Names:"
+echo "  Web App: himatif-web-prod"
+echo "  Database: himatif-db-prod"
+
