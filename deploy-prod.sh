@@ -5,8 +5,6 @@ echo "Starting production deployment..."
 echo "Stopping existing containers..."
 docker-compose -f docker-compose.prod.yml down
 
-echo "Cleaning up old images..."
-docker image prune -f
 
 echo "Building and starting production containers..."
 docker-compose -f docker-compose.prod.yml --env-file .env.production.server up -d --build
