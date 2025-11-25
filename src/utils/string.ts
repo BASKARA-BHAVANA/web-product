@@ -23,10 +23,9 @@ export const isUUID = (value: string): boolean => {
   return uuidRegex.test(value);
 };
 
-export function isURL(urlString: string, domain?: string): boolean {
+export const isURL = (urlString: string, domain?: string): boolean => {
   try {
     const url = new URL(urlString);
-
     if (!domain) return true;
 
     const hostname = url.hostname.toLowerCase();
@@ -36,4 +35,4 @@ export function isURL(urlString: string, domain?: string): boolean {
   } catch {
     return false;
   }
-}
+};

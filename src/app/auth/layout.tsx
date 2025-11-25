@@ -8,9 +8,7 @@ export default function Layout({
   return (
     <div className="relative flex h-screen w-screen overflow-hidden p-8">
       {/* container  */}
-      <div className="bg-card border-card-foreground relative z-10 m-auto w-full max-w-xl overflow-y-auto rounded-md border p-6">
-        {children}
-      </div>
+      <div className="relative z-10 m-auto">{children}</div>
 
       {/* brand  */}
       <div className="absolute top-4 right-4">
@@ -18,8 +16,8 @@ export default function Layout({
       </div>
 
       {/* insets  */}
-      <div className="bg-primary border-primary-foreground absolute -top-1/2 -left-2/3 h-screen w-screen rotate-45 border-[64px]"></div>
-      <div className="bg-primary border-primary-foreground absolute top-1/2 left-2/3 h-screen w-screen rotate-45 border-[64px]"></div>
+      <div className="border-primary-foreground bg-primary absolute -top-1/2 -left-3/4 h-screen w-screen rotate-45 border-[64px]"></div>
+      <div className="border-primary-foreground bg-primary absolute top-1/2 left-3/4 h-screen w-screen rotate-45 border-[64px]"></div>
     </div>
   );
 }

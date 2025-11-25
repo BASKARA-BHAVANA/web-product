@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
-import { Inter, Fira_Code } from 'next/font/google';
+import { Fira_Code, Montserrat } from 'next/font/google';
+// @ts-expect-error ignore
 import './globals.css';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/route';
-import SessionWrapper from './_components/session-wrapper';
+import SessionProvider from '../components/molecules/providers/session-provider';
 import { Toaster } from '@/components/atoms/sonner';
-import { ThemeProvider } from './_components/theme-provider';
+import { ScrollToTop } from '@/components/molecules/scrolls';
 
-const inter = Inter({
+const montserrat = Montserrat({
   variable: '--font-sans',
   subsets: ['latin'],
   display: 'swap',
@@ -34,19 +35,13 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${firaCode.variable} overflow-x-hidden antialiased`}
+        className={`${montserrat.variable} ${firaCode.variable} overflow-x-hidden antialiased`}
       >
-        <SessionWrapper session={session}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <Toaster />
-          </ThemeProvider>
-        </SessionWrapper>
+        <SessionProvider session={session}>
+          <ScrollToTop />
+          {children}
+          <Toaster />
+        </SessionProvider>
       </body>
     </html>
   );

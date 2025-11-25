@@ -1,23 +1,29 @@
 'use client';
 
 import { Button } from '@/components/atoms/button';
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/atoms/card';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 
-const Page = () => {
-  return (
-    <div className="flex flex-col items-center">
-      <h3 className="typo-h3 mb-2 text-center">Yuk, lanjut dengan Google!</h3>
-      <p className="max-w-sm text-center">
-        Cuma butuh satu klik buat mulai. Daftar atau login langsung pakai akun
-        Google kamu.
-      </p>
+export default function Page() {
+  const _login = async () => {
+    signIn('google', { callbackUrl: '/' });
+  };
 
-      <div className="my-8">
-        <Button
-          size={'lg'}
-          onClick={() => signIn('google', { callbackUrl: '/' })}
-        >
+  return (
+    <Card className="max-w-md">
+      <CardHeader>
+        <CardTitle>Login ke Akun Kamu</CardTitle>
+        <CardDescription>Login dengan akun google Kamu</CardDescription>
+      </CardHeader>
+      <CardFooter className="flex-col gap-2">
+        <Button size={'lg'} className="w-full" onClick={_login}>
           <Image
             src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg"
             width={20}
@@ -26,9 +32,7 @@ const Page = () => {
           />
           Lanjutkan dengan Google
         </Button>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
-};
-
-export default Page;
+}
