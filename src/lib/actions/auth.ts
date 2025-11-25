@@ -8,13 +8,13 @@ export async function auth(roles?: string[]) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.email) {
-    redirect('/auth/login');
+    redirect('/');
   }
 
   if (roles) {
     const userRole = session.user.role ?? '';
     if (!roles.includes(userRole)) {
-      redirect('/auth/forbidden');
+      redirect('/forbidden');
     }
   }
 

@@ -53,6 +53,7 @@ model User {
   image         String?
 
   role     Role      @default(USER)
+  scholar  Scholar?
   accounts Account[]
   sessions Session[]
 
@@ -69,4 +70,178 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+// HIMATIF 
+model Cabinet {
+  id              String  @id @default(uuid())
+  name            String  @unique @map("name")
+  slug            String  @map("slug")
+  startYear       Int     @map("start_year")
+  endYear         Int     @map("end_year")
+  description     String  @map("description")
+  tagline         String  @map("tagline")
+  vision          String  @map("vision")
+  mission         String  @map("mission")
+  logoPath        String? @map("logo_path")
+  firstImagePath  String? @map("first_image_path")
+  secondImagePath String? @map("second_image_path")
+  isActive        Boolean @default(false) @map("is_active")
+
+  contacts  CabinetContact[]
+  divisions Division[]
+  programs  WorkProgram[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("cabinets")
+}
+
+model CabinetContact {
+  id        String @id @default(uuid())
+  cabinetId String @map("cabinet_id")
+  key       String @map("key")
+  value     String @map("value")
+  label     String @map("label")
+
+  cabinet Cabinet @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("cabinet_contacts")
+}
+
+model Division {
+  id          String  @id @default(uuid())
+  cabinetId   String  @map("cabinet_id")
+  name        String  @map("name")
+  slug        String  @map("slug")
+  tagline     String  @map("tagline")
+  description String  @map("description")
+  logoPath    String? @map("logo_path")
+
+  cabinet  Cabinet          @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+  members  DivisionMember[]
+  programs WorkProgram[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([cabinetId, name])
+  @@map("divisions")
+}
+
+model DivisionMember {
+  id          String  @id @default(uuid())
+  divisionId  String  @map("division_id")
+  name        String  @map("name")
+  position    String  @map("position")
+  picturePath String? @map("picture_path")
+
+  division Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("division_members")
+}
+
+model WorkProgram {
+  id          String    @id @default(uuid())
+  divisionId  String?   @map("division_id")
+  cabinetId   String    @map("cabinet_id")
+  title       String    @map("title")
+  slug        String    @map("slug")
+  description String    @map("description")
+  content     String    @map("content")
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  picturePath String?   @map("picture_path")
+  isPinned    Boolean?  @map("is_pinned")
+
+  division Division? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
+  cabinet  Cabinet   @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("work_programs")
+}
+
+// SCHOLARS
+model Scholar {
+  id      String  @id @default(uuid())
+  userId  String? @unique @map("user_id")
+  name    String  @map("name")
+  sex     String? @map("sex")
+  nim     String  @unique @map("nim")
+  cohort  String? @map("cohort")
+  degree  String? @map("degree")
+  faculty String? @map("faculty")
+  major   String? @map("major")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("scholars")
+}
+
+// COURSE (BIOC)
+model Course {
+  id           String  @id @default(uuid())
+  courseId     String? @map("course_id")
+  title        String  @map("title")
+  slug         String  @unique @map("slug")
+  filePath     String  @map("file_path")
+  content      String? @map("content")
+  tags         String? @map("tags")
+  scholarRules Json?   @map("scholar_rules")
+
+  course  Course?  @relation(name: "CoursesChildren", fields: [courseId], references: [id], onDelete: SetNull)
+  courses Course[] @relation(name: "CoursesChildren")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("courses")
+}
+
+// ARTICLE
+model Article {
+  id           String  @id @default(uuid())
+  title        String  @map("title")
+  slug         String  @unique @map("slug")
+  content      String  @map("content")
+  picturePath  String? @map("picture_path")
+  author       String? @map("author")
+  tags         String? @map("tags")
+  scholarRules Json?   @map("scholar_rules")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("articles")
+}
+
+// EVENT
+model Event {
+  id           String   @id @default(uuid())
+  title        String   @map("title")
+  slug         String   @unique @map("slug")
+  startDate    DateTime @map("start_date")
+  endDate      DateTime @map("end_date")
+  content      String?  @map("content")
+  location     String?  @map("location")
+  longlat      String?  @map("longlat")
+  imagePath    String?  @map("image_path")
+  scholarRules Json?    @map("scholar_rules")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("events")
 }

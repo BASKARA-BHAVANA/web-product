@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Fira_Code, Montserrat } from 'next/font/google';
+import { Fira_Code, IBM_Plex_Mono } from 'next/font/google';
 // @ts-expect-error ignore
 import './globals.css';
 import { getServerSession } from 'next-auth';
@@ -8,13 +8,14 @@ import SessionProvider from '../components/molecules/providers/session-provider'
 import { Toaster } from '@/components/atoms/sonner';
 import { ScrollToTop } from '@/components/molecules/scrolls';
 
-const montserrat = Montserrat({
+const sans = IBM_Plex_Mono({
   variable: '--font-sans',
   subsets: ['latin'],
   display: 'swap',
+  weight: '400',
 });
 
-const firaCode = Fira_Code({
+const mono = Fira_Code({
   variable: '--font-mono',
   subsets: ['latin'],
   display: 'swap',
@@ -35,7 +36,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${montserrat.variable} ${firaCode.variable} overflow-x-hidden antialiased`}
+        className={`${sans.variable} ${mono.variable} overflow-x-hidden antialiased`}
       >
         <SessionProvider session={session}>
           <ScrollToTop />
