@@ -4,7 +4,7 @@ import { LogoInformatics } from '@/assets/images';
 
 const LoadingOverlay = () => {
   return (
-    <div className="bg-background flex min-h-screen w-screen p-12 pb-48">
+    <div className="bg-background z-50 flex min-h-screen w-screen p-12 pb-48">
       <div className="text-primary-foreground relative m-auto size-56 rounded-full">
         <Image
           src={LogoInformatics}

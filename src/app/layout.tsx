@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Fira_Code, IBM_Plex_Mono } from 'next/font/google';
+import { Fira_Code, Montserrat } from 'next/font/google';
 // @ts-expect-error ignore
 import './globals.css';
 import { getServerSession } from 'next-auth';
@@ -8,11 +8,10 @@ import SessionProvider from '../components/molecules/providers/session-provider'
 import { Toaster } from '@/components/atoms/sonner';
 import { ScrollToTop } from '@/components/molecules/scrolls';
 
-const sans = IBM_Plex_Mono({
+const sans = Montserrat({
   variable: '--font-sans',
   subsets: ['latin'],
   display: 'swap',
-  weight: '400',
 });
 
 const mono = Fira_Code({
