@@ -14,12 +14,12 @@ const AdminFab = async ({
   return (
     <div
       className={cn(
-        'bg-foreground fixed right-0 bottom-6 z-10 flex max-w-xl flex-wrap items-center gap-3 rounded-l-lg py-2 ps-3 pe-6',
+        'bg-background border-primary-foreground shadow-primary fixed right-6 bottom-6 z-10 flex max-w-xl flex-wrap items-center gap-3 rounded-xl border p-2 ps-3 shadow-xl',
         className
       )}
       {...props}
     >
-      <ShieldUserIcon className="text-primary" />
+      <ShieldUserIcon />
       {children}
     </div>
   );

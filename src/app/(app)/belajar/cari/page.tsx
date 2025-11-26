@@ -30,6 +30,7 @@ const Page = async (props: {
         slug: true,
         tags: true,
       },
+      orderBy: { createdAt: 'desc' },
     }),
     prisma.course.count({
       where: search

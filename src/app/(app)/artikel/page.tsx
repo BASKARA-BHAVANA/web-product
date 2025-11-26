@@ -6,6 +6,10 @@ import Headline from '@/components/molecules/headline';
 import { ExceptionOverlay } from '@/components/molecules/exception';
 import { ArticleCard } from '@/components/organisms/article-widgets';
 import { Prisma } from '@/generated/prisma';
+import AdminFab from '@/components/molecules/admin-fab';
+import { Button } from '@/components/atoms/button';
+import Link from 'next/link';
+import { PlusIcon } from 'lucide-react';
 
 const Page = async (props: {
   searchParams: Promise<{ search?: string; page?: number; limit?: number }>;
@@ -34,6 +38,7 @@ const Page = async (props: {
         tags: true,
         picturePath: true,
       },
+      orderBy: { createdAt: 'desc' },
     }),
     prisma.article.count({
       where,
@@ -42,6 +47,15 @@ const Page = async (props: {
 
   return (
     <>
+      <AdminFab>
+        <Button asChild>
+          <Link href={'/artikel/0/tambah'}>
+            <PlusIcon />
+            Artikel baru
+          </Link>
+        </Button>
+      </AdminFab>
+
       <Container className="max-w-3xl py-12">
         <Headline
           className="mb-12 items-center"
@@ -61,7 +75,7 @@ const Page = async (props: {
 
       <Container>
         {articles.length ? (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {articles?.map((dat, i) => <ArticleCard key={i} data={dat} />)}
           </div>
         ) : (

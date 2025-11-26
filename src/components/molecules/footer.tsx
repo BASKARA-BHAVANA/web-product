@@ -5,7 +5,7 @@ import { Button } from '../atoms/button';
 
 const Footer = async () => {
   return (
-    <div className="w-screen p-4">
+    <div className="w-screen p-6">
       <Container className="bg-background border-primary-foreground flex flex-col items-center rounded-xl border py-12">
         <div className="mb-2">
           <BrandLogo />
