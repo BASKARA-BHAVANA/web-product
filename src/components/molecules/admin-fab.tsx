@@ -14,13 +14,16 @@ const AdminFab = async ({
   return (
     <div
       className={cn(
-        'bg-background border-foreground fixed right-6 bottom-6 z-10 flex w-full max-w-xl flex-wrap items-center gap-3 rounded-lg border p-3',
+        'bg-background border-foreground shadow-primary fixed right-6 bottom-6 z-10 flex max-w-xl flex-wrap items-center gap-3 rounded-lg border p-3 shadow-2xl',
         className
       )}
       {...props}
     >
-      <ShieldUserIcon size={28} className="text-foreground" />
       {children}
+      <div className="bg-primary border-primary-foreground text-primary-foreground absolute right-3 bottom-full flex items-center gap-1 rounded-t-lg border px-2 py-1">
+        <ShieldUserIcon size={16} />
+        <small className="typo-small">Admin</small>
+      </div>
     </div>
   );
 };

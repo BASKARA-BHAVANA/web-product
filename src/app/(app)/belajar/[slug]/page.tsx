@@ -1,0 +1,106 @@
+import Container from '@/components/molecules/container';
+// import { CourseListItem } from '@/components/organisms/course';
+import { Badge } from '@/components/atoms/badge';
+import { Button } from '@/components/atoms/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/atoms/card';
+import { List } from '@/components/atoms/list';
+import { CornerLeftDownIcon } from 'lucide-react';
+import Link from 'next/link';
+import { ExceptionOverlay } from '@/components/molecules/exception';
+import { prisma } from '@/lib/prisma';
+import { CourseListItem } from '@/components/organisms/course-widgets';
+
+const Page = async (props: { params: Promise<{ slug: string }> }) => {
+  const { slug } = await props.params;
+  const course = await prisma.course.findUnique({
+    where: { slug },
+    include: {
+      course: { select: { slug: true, title: true } },
+      courses: { select: { slug: true, title: true, tags: true } },
+    },
+  });
+
+  if (!course)
+    return (
+      <ExceptionOverlay
+        title="Materi Tidak Ada"
+        subtitle="Lanjut ke pencarian aja yuk!"
+      >
+        <Button asChild>
+          <Link replace href={'/belajar/cari'}>
+            Pencarian
+          </Link>
+        </Button>
+      </ExceptionOverlay>
+    );
+
+  return (
+    <>
+      <Container>
+        {course.course && (
+          <div className="mb-1 flex items-center gap-2">
+            <CornerLeftDownIcon
+              size={14}
+              className="text-muted-foreground relative top-1"
+            />
+            <small className="typo-small text-muted-foreground">
+              Submateri dari
+            </small>
+            <Link href={`/belajar/${course.course.slug}`}>
+              <Badge variant={'secondary'} className="cursor-pointer">
+                {course.course.title}
+              </Badge>
+            </Link>
+          </div>
+        )}
+
+        <h1 className="typo-h1">{course.title}</h1>
+        {course.tags && (
+          <div className="mt-3 flex flex-wrap gap-3">
+            {course.tags.split(',').map((tag, i) => (
+              <Badge key={i}>{tag}</Badge>
+            ))}
+          </div>
+        )}
+      </Container>
+
+      <Container className="flex flex-col gap-12 lg:flex-row">
+        <div className="lg:w-2/3">
+          <div className="mb-12 aspect-video overflow-hidden rounded-lg">
+            <iframe src={course.filePath} className="size-full" />
+          </div>
+
+          <div
+            className="ql-editor"
+            dangerouslySetInnerHTML={{ __html: course.content ?? '' }}
+          ></div>
+        </div>
+        <div className="lg:w-1/3">
+          <Card className="mb-3">
+            <CardHeader>
+              <CardTitle>Submateri</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <List>
+                {course.courses.length ? (
+                  course.courses.map((data, i) => (
+                    <CourseListItem key={i} data={data} />
+                  ))
+                ) : (
+                  <ExceptionOverlay title="Tidak ada materi lainnya" />
+                )}
+              </List>
+            </CardContent>
+          </Card>
+        </div>
+      </Container>
+    </>
+  );
+};
+
+export default Page;

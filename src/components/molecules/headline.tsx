@@ -36,9 +36,11 @@ const Headline = ({
         <div
           className={cn(
             'bg-primary flex flex-nowrap items-center rounded-lg rounded-tl-none p-3',
-            className?.includes('items-center') ? 'rounded-tl-lg' : '',
+            className?.includes('items-center')
+              ? 'rounded-tl-lg text-center'
+              : '',
             className?.includes('items-end')
-              ? 'rounded-tl-lg rounded-tr-none'
+              ? 'rounded-tl-lg rounded-tr-none text-end'
               : ''
           )}
         >
