@@ -57,10 +57,12 @@ export default async function Home(params: {
   return (
     <>
       <AdminFab>
-        <Button>
-          <Edit2Icon />
-          Edit kabinet ini
-        </Button>
+        {!!cabinet && (
+          <Button>
+            <Edit2Icon />
+            Edit kabinet ini
+          </Button>
+        )}
 
         <Button>
           <PlusIcon />
