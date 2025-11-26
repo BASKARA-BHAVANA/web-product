@@ -53,7 +53,7 @@ const Page = async (props: { params: Promise<{ slugs: string[] }> }) => {
   return (
     <>
       <AdminFab>
-        <Button variant={'secondary'} asChild>
+        <Button asChild>
           <Link href={`/belajar/${headSlug ?? '0'}/tambah`}>
             <PlusIcon />
             Materi baru

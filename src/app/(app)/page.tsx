@@ -57,12 +57,12 @@ export default async function Home(params: {
   return (
     <>
       <AdminFab>
-        <Button variant={'secondary'}>
+        <Button>
           <Edit2Icon />
           Edit kabinet ini
         </Button>
 
-        <Button variant={'secondary'}>
+        <Button>
           <PlusIcon />
           Kabinet baru
         </Button>

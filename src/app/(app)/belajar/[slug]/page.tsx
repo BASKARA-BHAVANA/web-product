@@ -43,7 +43,7 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
   return (
     <>
       <AdminFab>
-        <Button variant={'secondary'} asChild>
+        <Button asChild>
           <Link href={`/belajar/${course.slug}/edit`}>
             <Edit2Icon />
             Edit
