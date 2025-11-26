@@ -9,11 +9,12 @@ import {
   CardTitle,
 } from '@/components/atoms/card';
 import { List } from '@/components/atoms/list';
-import { CornerLeftDownIcon } from 'lucide-react';
+import { CornerLeftDownIcon, Edit2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { ExceptionOverlay } from '@/components/molecules/exception';
 import { prisma } from '@/lib/prisma';
 import { CourseListItem } from '@/components/organisms/course-widgets';
+import AdminFab from '@/components/molecules/admin-fab';
 
 const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
@@ -41,6 +42,15 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
 
   return (
     <>
+      <AdminFab>
+        <Button variant={'secondary'} asChild>
+          <Link href={`/belajar/${course.slug}/edit`}>
+            <Edit2Icon />
+            Edit
+          </Link>
+        </Button>
+      </AdminFab>
+
       <Container>
         {course.course && (
           <div className="mb-1 flex items-center gap-2">
