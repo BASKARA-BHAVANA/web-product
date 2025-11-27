@@ -50,7 +50,9 @@ const CabinetContactCard = ({ contact }: CabinetContactCardProps) => {
           <div className="text-primary-foreground">{icon}</div>
           <div className="grid -space-y-1">
             <h4 className="typo-h4 whitespace-nowrap">{contact.value}</h4>
-            <p className="typo-p text-muted-foreground">{contact.key}</p>
+            <p className="typo-p text-muted-foreground">
+              {contact.key} {contact.label ? `(${contact.label})` : ''}
+            </p>
           </div>
         </div>
       </Link>

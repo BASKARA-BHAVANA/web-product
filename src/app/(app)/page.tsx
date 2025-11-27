@@ -7,6 +7,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/atoms/carousel';
+import {
+  ScrollVelocityContainer,
+  ScrollVelocityRow,
+} from '@/components/atoms/magicui/scroll-based-velocity';
 import AdminFab from '@/components/molecules/admin-fab';
 import Container from '@/components/molecules/container';
 import { ExceptionOverlay } from '@/components/molecules/exception';
@@ -58,15 +62,19 @@ export default async function Home(params: {
     <>
       <AdminFab>
         {!!cabinet && (
-          <Button>
-            <Edit2Icon />
-            Edit kabinet ini
+          <Button asChild>
+            <Link href={`/himatif/${cabinet.slug}/edit`}>
+              <Edit2Icon />
+              Edit kabinet ini
+            </Link>
           </Button>
         )}
 
-        <Button>
-          <PlusIcon />
-          Kabinet baru
+        <Button asChild>
+          <Link href={'/himatif/0/tambah'}>
+            <PlusIcon />
+            Kabinet baru
+          </Link>
         </Button>
       </AdminFab>
 
@@ -96,6 +104,22 @@ export default async function Home(params: {
               Periode {cabinet?.startYear}/{cabinet?.endYear}
             </p>
           </div>
+        </Container>
+      )}
+
+      {!!cabinet && (
+        <Container>
+          <div className="from-background pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-1/3 bg-gradient-to-r to-transparent"></div>
+          <div className="from-background pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-1/3 bg-gradient-to-l to-transparent"></div>
+
+          <ScrollVelocityContainer className="text-muted-foreground text-5xl uppercase">
+            <ScrollVelocityRow baseVelocity={20} className="mb-6" direction={1}>
+              {cabinet.tagline} •
+            </ScrollVelocityRow>
+            <ScrollVelocityRow baseVelocity={20} direction={-1}>
+              {cabinet.tagline} •
+            </ScrollVelocityRow>
+          </ScrollVelocityContainer>
         </Container>
       )}
 
@@ -183,10 +207,8 @@ export default async function Home(params: {
               largeTexts={['Visi', 'Langkah Menuju Harapan']}
             />
             <Card>
-              <CardContent className="pt-6">
-                <h4 className="typo-p text-muted-foreground">
-                  {cabinet.vision}
-                </h4>
+              <CardContent>
+                <h4 className="typo-p">{cabinet.vision}</h4>
               </CardContent>
             </Card>
           </div>
@@ -199,17 +221,15 @@ export default async function Home(params: {
               />
             </div>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent>
                 <div className="flex flex-col items-end gap-3">
                   {cabinet.mission.split('\n').map((dat, i) => (
                     <div
                       key={i}
                       className="flex items-center gap-6 border-b pb-3"
                     >
-                      <p className="typo-p text-muted-foreground text-end">
-                        {dat}
-                      </p>
-                      <h1 className="typo-h1 text-primary w-6 opacity-50">
+                      <p className="typo-p text-end">{dat}</p>
+                      <h1 className="typo-h1 text-muted-foreground w-6 opacity-50">
                         {i + 1}
                       </h1>
                     </div>

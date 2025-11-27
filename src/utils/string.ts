@@ -23,15 +23,20 @@ export const isUUID = (value: string): boolean => {
   return uuidRegex.test(value);
 };
 
-export const isURL = (urlString: string, domain?: string): boolean => {
+export const isURL = (
+  urlString: string,
+  domain?: string | string[]
+): boolean => {
   try {
     const url = new URL(urlString);
     if (!domain) return true;
 
     const hostname = url.hostname.toLowerCase();
-    const domainLower = domain.toLowerCase();
+    const domains = Array.isArray(domain)
+      ? domain.map((d) => d.toLowerCase())
+      : [domain.toLowerCase()];
 
-    return hostname === domainLower || hostname.endsWith(`.${domainLower}`);
+    return domains.some((d) => hostname === d || hostname.endsWith(`.${d}`));
   } catch {
     return false;
   }

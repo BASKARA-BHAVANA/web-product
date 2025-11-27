@@ -173,6 +173,50 @@ function SelectScrollDownButton({
   );
 }
 
+export type InputSelectProps<T> = React.ComponentProps<typeof Select> & {
+  list: T[];
+  valueKey: keyof T;
+  labelKey?: keyof T;
+  labelBuilder?: (item: T) => string;
+  placeholder?: string;
+};
+
+function InputSelect<T>({
+  list,
+  valueKey,
+  labelKey,
+  labelBuilder,
+  placeholder = 'Select',
+  ...props
+}: InputSelectProps<T>) {
+  const renderLabel = React.useMemo(() => {
+    if (labelBuilder) return labelBuilder;
+    if (labelKey) return (item: T) => String(item[labelKey]);
+    return () => '';
+  }, [labelBuilder, labelKey]);
+
+  const renderedItems = React.useMemo(() => {
+    return list.map((item) => {
+      const value = String(item[valueKey]);
+      const label = renderLabel(item);
+      return (
+        <SelectItem key={value} value={value}>
+          {label}
+        </SelectItem>
+      );
+    });
+  }, [list, valueKey, renderLabel]);
+
+  return (
+    <Select {...props}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>{renderedItems}</SelectContent>
+    </Select>
+  );
+}
+
 export {
   Select,
   SelectContent,
@@ -184,4 +228,5 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
+  InputSelect,
 };
