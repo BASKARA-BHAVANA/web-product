@@ -51,7 +51,7 @@ export default async function Home(params: {
   const articles = await prisma.article.findMany({
     select: { title: true, slug: true, tags: true, picturePath: true },
     orderBy: { createdAt: 'desc' },
-    take: 7,
+    take: 6,
   });
 
   return (
@@ -112,7 +112,7 @@ export default async function Home(params: {
         </div>
 
         {articles.length ? (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {articles.map((dat, i) => (
               <ArticleCard key={i} data={dat} />
             ))}

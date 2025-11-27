@@ -81,14 +81,18 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
 
       <Container className="flex flex-col gap-12 lg:flex-row">
         <div className="lg:w-2/3">
-          <div className="mb-12 aspect-video overflow-hidden rounded-lg">
+          <div className="mb-6 aspect-video overflow-hidden rounded-lg">
             <iframe src={course.filePath} className="size-full" />
           </div>
 
-          <div
-            className="ql-editor"
-            dangerouslySetInnerHTML={{ __html: course.content ?? '' }}
-          ></div>
+          <Card>
+            <CardContent>
+              <div
+                className="ql-editor"
+                dangerouslySetInnerHTML={{ __html: course.content ?? '' }}
+              ></div>
+            </CardContent>
+          </Card>
         </div>
         <div className="lg:w-1/3">
           <Card className="mb-3">

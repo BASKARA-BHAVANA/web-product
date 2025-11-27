@@ -7,6 +7,7 @@ import { CalendarDaysIcon, UserPenIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { Card, CardContent } from '@/components/atoms/card';
 
 const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
@@ -55,10 +56,14 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
             </div>
           )}
 
-          <div
-            className="ql-editor"
-            dangerouslySetInnerHTML={{ __html: article.content ?? '' }}
-          ></div>
+          <Card>
+            <CardContent>
+              <div
+                className="ql-editor"
+                dangerouslySetInnerHTML={{ __html: article.content ?? '' }}
+              ></div>
+            </CardContent>
+          </Card>
         </div>
         <div className="lg:w-1/3"></div>
       </Container>

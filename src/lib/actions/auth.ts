@@ -2,8 +2,18 @@
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Role } from '@/generated/prisma';
-import { getServerSession } from 'next-auth';
+import { getServerSession, Session } from 'next-auth';
 import { redirect } from 'next/navigation';
+
+export async function auth(
+  roles?: Role[],
+  options?: { redirect?: true }
+): Promise<Session>;
+
+export async function auth(
+  roles?: Role[],
+  options?: { redirect?: false }
+): Promise<Session | null>;
 
 export async function auth(
   roles?: Role[],

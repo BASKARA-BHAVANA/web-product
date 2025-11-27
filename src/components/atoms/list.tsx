@@ -78,7 +78,7 @@ const ListSimpleItem = ({
     <div className={cn('flex items-center gap-2 p-2', className)} {...props}>
       {label && (
         <>
-          <p className="typo-p max-w-40 grow">{label}</p>
+          <p className="typo-p max-w-40 grow font-semibold">{label}</p>
           <div className="">:</div>
         </>
       )}
