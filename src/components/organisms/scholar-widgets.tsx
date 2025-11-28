@@ -36,7 +36,7 @@ const ScholarsFilterForm = ({
             onChange={(e) =>
               onValueChange?.({
                 ...value,
-                cohorts: e.target.value.split(','),
+                cohorts: e.target.value == '' ? [] : e.target.value.split(','),
               })
             }
           />
