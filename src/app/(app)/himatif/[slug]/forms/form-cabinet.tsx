@@ -264,6 +264,7 @@ const FormCabinet = ({
               className="border-primary-foreground flex flex-wrap items-start gap-6 rounded-md border p-6"
             >
               <InputField
+                required
                 label="Saluran"
                 error={(form.errors.contacts?.[i] as any)?.key}
               >
@@ -279,6 +280,7 @@ const FormCabinet = ({
               </InputField>
 
               <InputField
+                required
                 label="Kontak"
                 className="grow"
                 error={(form.errors.contacts?.[i] as any)?.value}

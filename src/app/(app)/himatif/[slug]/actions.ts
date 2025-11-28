@@ -7,6 +7,7 @@ import { auth } from '@/lib/actions/auth';
 import { CreateUpdateCabinet } from './schema';
 import { flashSet } from '@/lib/actions/flash';
 import { redirect, RedirectType } from 'next/navigation';
+import { buildError } from '@/lib/actions/error';
 
 export async function createCabinet({
   data,
@@ -20,7 +21,14 @@ export async function createCabinet({
       data: {
         ...data,
         contacts: {
-          createMany: { data: data.contacts ?? [] },
+          createMany: {
+            data:
+              data.contacts?.map(({ key, label, value }) => ({
+                key,
+                value,
+                label: label ?? '',
+              })) ?? [],
+          },
         },
       },
     });
@@ -38,10 +46,7 @@ export async function createCabinet({
       data: cabinet,
     };
   } catch (err: any) {
-    return {
-      success: false,
-      message: err.message || 'Terjadi masalah',
-    };
+    return buildError(err);
   }
 }
 
@@ -67,7 +72,7 @@ export async function updateCabinet({
               data: contacts.map(({ key, label, value }) => ({
                 key,
                 value,
-                label,
+                label: label ?? '',
               })),
             },
           },
@@ -88,10 +93,7 @@ export async function updateCabinet({
       data: cabinet,
     };
   } catch (err: any) {
-    return {
-      success: false,
-      message: err.message || 'Terjadi masalah',
-    };
+    return buildError(err);
   }
 }
 

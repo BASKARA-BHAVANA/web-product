@@ -20,7 +20,7 @@ export const createUpdateCabinetSchema = y.object({
         .object({
           key: y.string().required('Wajib diisi'),
           value: y.string().required('Wajib diisi'),
-          label: y.string().optional().default(''),
+          label: y.string().optional(),
         })
         .required()
     )
