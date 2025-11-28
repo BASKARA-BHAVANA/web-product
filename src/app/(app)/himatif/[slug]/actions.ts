@@ -5,6 +5,8 @@ import { Cabinet } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/actions/auth';
 import { CreateUpdateCabinet } from './schema';
+import { flashSet } from '@/lib/actions/flash';
+import { redirect, RedirectType } from 'next/navigation';
 
 export async function createCabinet({
   data,
@@ -91,4 +93,17 @@ export async function updateCabinet({
       message: err.message || 'Terjadi masalah',
     };
   }
+}
+
+export async function deleteCabinet(id: string, redirectTo: string = '/') {
+  try {
+    const cabinet = await prisma.cabinet.delete({ where: { id } });
+    await flashSet({
+      success: true,
+      message: 'Berhasil hapus kabinet ' + cabinet.name,
+    } as ActionResult);
+  } catch (err: any) {
+    await flashSet({ success: false, message: err.message } as ActionResult);
+  }
+  redirect(redirectTo, RedirectType.replace);
 }

@@ -5,6 +5,8 @@ import { Article } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/actions/auth';
 import { CreateUpdateArticle } from './schema';
+import { flashSet } from '@/lib/actions/flash';
+import { redirect, RedirectType } from 'next/navigation';
 
 export async function createArticle({
   data,
@@ -57,4 +59,20 @@ export async function updateArticle({
       message: err.message || 'Terjadi masalah',
     };
   }
+}
+
+export async function deleteArticle(
+  id: string,
+  redirectTo: string = '/artikel'
+) {
+  try {
+    const article = await prisma.article.delete({ where: { id } });
+    await flashSet({
+      success: true,
+      message: 'Berhasil hapus artikel ' + article.title,
+    } as ActionResult);
+  } catch (err: any) {
+    await flashSet({ success: false, message: err.message } as ActionResult);
+  }
+  redirect(redirectTo, RedirectType.replace);
 }

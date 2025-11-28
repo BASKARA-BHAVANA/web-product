@@ -15,6 +15,7 @@ import { prisma } from '@/lib/prisma';
 import Headline from '@/components/molecules/headline';
 import { ExceptionOverlay } from '@/components/molecules/exception';
 import AdminView from '@/components/molecules/admin-view';
+import { FlashActionResult } from '@/components/molecules/flash';
 
 const Page = async (props: { params: Promise<{ slugs: string[] }> }) => {
   const { slugs } = await props.params;
@@ -53,6 +54,8 @@ const Page = async (props: { params: Promise<{ slugs: string[] }> }) => {
   return (
     <>
       <Container>
+        <FlashActionResult />
+
         <Headline
           className="mb-12 items-center"
           largeTexts={['Bridging Informatics']}

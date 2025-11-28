@@ -38,6 +38,8 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { deleteCabinet } from './himatif/[slug]/actions';
+import { FlashActionResult } from '@/components/molecules/flash';
 
 export default async function Home(params: {
   searchParams: Promise<{ kabinet?: string }>;
@@ -83,13 +85,23 @@ export default async function Home(params: {
 
   return (
     <>
+      <FlashActionResult />
+
       <AdminView className="m-3">
         {!!cabinet && (
           <>
-            <Button variant={'outline'} size={'sm'}>
-              <Trash2Icon />
-              Hapus &quot;{cabinet.name}&quot;
-            </Button>
+            <form
+              action={async () => {
+                'use server';
+                await deleteCabinet(cabinet.id);
+              }}
+            >
+              <Button variant={'outline'} size={'sm'}>
+                <Trash2Icon />
+                Hapus &quot;{cabinet.name}&quot;
+              </Button>
+            </form>
+
             <Button variant={'outline'} size={'sm'} asChild>
               <Link href={`/himatif/${cabinet.slug}/edit`}>
                 <Edit2Icon />

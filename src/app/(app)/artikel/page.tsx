@@ -10,6 +10,7 @@ import { Button } from '@/components/atoms/button';
 import Link from 'next/link';
 import { PlusIcon } from 'lucide-react';
 import AdminView from '@/components/molecules/admin-view';
+import { FlashActionResult } from '@/components/molecules/flash';
 
 const Page = async (props: {
   searchParams: Promise<{ search?: string; page?: number; limit?: number }>;
@@ -53,6 +54,8 @@ const Page = async (props: {
           largeTexts={['Artikel']}
           headText="Himatif: Apa yang Baru?"
         />
+
+        <FlashActionResult />
 
         <form method="get">
           <Input

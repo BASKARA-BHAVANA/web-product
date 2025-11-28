@@ -5,6 +5,8 @@ import { CreateUpdateCourse } from './schema';
 import { Course } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/actions/auth';
+import { flashSet } from '@/lib/actions/flash';
+import { redirect, RedirectType } from 'next/navigation';
 
 export async function createCourse({
   data,
@@ -57,4 +59,20 @@ export async function updateCourse({
       message: err.message || 'Terjadi masalah',
     };
   }
+}
+
+export async function deleteCourse(
+  id: string,
+  redirectTo: string = '/belajar/cari'
+) {
+  try {
+    const course = await prisma.course.delete({ where: { id } });
+    await flashSet({
+      success: true,
+      message: 'Berhasil hapus materi ' + course.title,
+    } as ActionResult);
+  } catch (err: any) {
+    await flashSet({ success: false, message: err.message } as ActionResult);
+  }
+  redirect(redirectTo, RedirectType.replace);
 }

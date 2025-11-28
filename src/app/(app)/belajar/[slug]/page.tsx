@@ -14,6 +14,7 @@ import { ExceptionOverlay } from '@/components/molecules/exception';
 import { prisma } from '@/lib/prisma';
 import { CourseListItem } from '@/components/organisms/course-widgets';
 import AdminView from '@/components/molecules/admin-view';
+import { deleteCourse } from '../actions';
 
 const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
@@ -72,10 +73,17 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
           </div>
         )}
         <AdminView className="mt-3">
-          <Button variant={'outline'} size={'sm'}>
-            <Trash2Icon />
-            Hapus
-          </Button>
+          <form
+            action={async () => {
+              'use server';
+              await deleteCourse(course.id);
+            }}
+          >
+            <Button variant={'outline'} size={'sm'}>
+              <Trash2Icon />
+              Hapus
+            </Button>
+          </form>
           <Button variant={'outline'} size={'sm'} asChild>
             <Link href={`/belajar/${course.slug}/edit`}>
               <Edit2Icon />
