@@ -37,7 +37,6 @@ const DivisionCard = ({ cabinetSlug, data }: DivisionCardProps) => {
         <div className="bg-card group-hover:shadow-primary absolute top-0 left-1/2 -z-10 h-full -translate-x-1/2 rounded-md transition-all group-hover:w-2/3 group-hover:scale-y-150 group-hover:shadow-xl"></div>
       </div>
       <Button
-        variant={'outline'}
         className="transition-transform group-hover:translate-y-4"
         asChild
       >
@@ -73,21 +72,18 @@ const DivisionMemberCard = ({ data }: DivisionMemberCardProps) => {
 
       <div className="flex items-center gap-3">
         <Button
-          variant={'outline'}
           className="transition-transform group-hover:translate-y-1 group-hover:scale-125 group-hover:-rotate-12"
           size={'icon'}
         >
           <InstagramIcon />
         </Button>
         <Button
-          variant={'outline'}
           className="transition-transform group-hover:translate-y-3 group-hover:scale-105 group-hover:rotate-3"
           size={'icon'}
         >
           <TwitterIcon />
         </Button>
         <Button
-          variant={'outline'}
           className="transition-transform group-hover:translate-y-2 group-hover:scale-110 group-hover:rotate-12"
           size={'icon'}
         >

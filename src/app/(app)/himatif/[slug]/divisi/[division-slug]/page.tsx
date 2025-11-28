@@ -7,6 +7,10 @@ import {
 import Image from 'next/image';
 import { ExceptionOverlay } from '@/components/molecules/exception';
 import { prisma } from '@/lib/prisma';
+import AdminView from '@/components/molecules/admin-view';
+import { Button } from '@/components/atoms/button';
+import { Edit2Icon, Trash2Icon } from 'lucide-react';
+import Link from 'next/link';
 
 const Page = async (props: {
   params: Promise<{ slug: string; 'division-slug': string }>;
@@ -29,6 +33,19 @@ const Page = async (props: {
 
   return (
     <>
+      <AdminView className="m-3">
+        <Button variant={'outline'} size={'sm'}>
+          <Trash2Icon />
+          Hapus
+        </Button>
+        <Button variant={'outline'} size={'sm'} asChild>
+          <Link href={`${division.slug}/edit`}>
+            <Edit2Icon />
+            Edit
+          </Link>
+        </Button>
+      </AdminView>
+
       <Container className="flex flex-col gap-4 pb-24 lg:flex-row lg:items-center lg:justify-center">
         <div className="aspect-square max-w-60 grow lg:max-w-sm">
           <Image
@@ -57,7 +74,7 @@ const Page = async (props: {
         <div className="from-background pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-1/3 bg-gradient-to-r to-transparent"></div>
         <div className="from-background pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-1/3 bg-gradient-to-l to-transparent"></div>
 
-        <ScrollVelocityContainer className="typo-h1 text-muted-foreground uppercase">
+        <ScrollVelocityContainer className="text-muted-foreground text-5xl uppercase">
           <ScrollVelocityRow baseVelocity={20} className="mb-3" direction={1}>
             {division.tagline} •
           </ScrollVelocityRow>
