@@ -40,6 +40,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { deleteCabinet } from './himatif/[slug]/actions';
 import { FlashActionResult } from '@/components/molecules/flash';
+import { WorkProgramCard } from '@/components/organisms/workprogram-widgets';
 
 export default async function Home(params: {
   searchParams: Promise<{ kabinet?: string }>;
@@ -58,6 +59,18 @@ export default async function Home(params: {
           _count: { select: { members: true } },
         },
         orderBy: { name: 'asc' },
+      },
+      programs: {
+        where: { isPinned: true },
+        select: {
+          cabinet: { select: { slug: true } },
+          title: true,
+          slug: true,
+          startDate: true,
+          endDate: true,
+          picturePath: true,
+          isPinned: true,
+        },
       },
       contacts: true,
       _count: { select: { programs: true } },
@@ -320,6 +333,34 @@ export default async function Home(params: {
               </CardContent>
             </Card>
           </div>
+        </Container>
+      )}
+
+      {/* Pinned work programs  */}
+      {!!cabinet && (
+        <Container className="py-24">
+          <div className="mb-12 flex flex-wrap items-center justify-between gap-3">
+            <Headline
+              largeTexts={['Program Kerja', 'Unggulan']}
+              headText="Langkah Nyata, Hasil Hebat"
+            />
+
+            <Button variant={'ghost'} asChild>
+              <Link href={`/himatif/${cabinet.slug}/program-kerja`}>
+                Lainnya <ArrowUpRightIcon />
+              </Link>
+            </Button>
+          </div>
+
+          {cabinet.programs.length ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {cabinet.programs.map((dat, i) => (
+                <WorkProgramCard key={i} data={dat} />
+              ))}
+            </div>
+          ) : (
+            <ExceptionOverlay title="Belum ada program yang disematkan" />
+          )}
         </Container>
       )}
 
