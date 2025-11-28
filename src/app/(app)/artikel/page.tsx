@@ -6,10 +6,10 @@ import Headline from '@/components/molecules/headline';
 import { ExceptionOverlay } from '@/components/molecules/exception';
 import { ArticleCard } from '@/components/organisms/article-widgets';
 import { Prisma } from '@/generated/prisma';
-import AdminFab from '@/components/molecules/admin-fab';
 import { Button } from '@/components/atoms/button';
 import Link from 'next/link';
 import { PlusIcon } from 'lucide-react';
+import AdminView from '@/components/molecules/admin-view';
 
 const Page = async (props: {
   searchParams: Promise<{ search?: string; page?: number; limit?: number }>;
@@ -47,15 +47,6 @@ const Page = async (props: {
 
   return (
     <>
-      <AdminFab>
-        <Button asChild>
-          <Link href={'/artikel/0/tambah'}>
-            <PlusIcon />
-            Artikel baru
-          </Link>
-        </Button>
-      </AdminFab>
-
       <Container className="max-w-3xl py-12">
         <Headline
           className="mb-12 items-center"
@@ -71,6 +62,15 @@ const Page = async (props: {
             placeholder="Cari..."
           />
         </form>
+
+        <AdminView className="mt-3">
+          <Button variant={'outline'} size={'sm'} asChild>
+            <Link href={'/artikel/0/tambah'}>
+              <PlusIcon />
+              Artikel baru
+            </Link>
+          </Button>
+        </AdminView>
       </Container>
 
       <Container>

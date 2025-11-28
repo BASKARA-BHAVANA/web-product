@@ -11,7 +11,7 @@ import {
   ScrollVelocityContainer,
   ScrollVelocityRow,
 } from '@/components/atoms/magicui/scroll-based-velocity';
-import AdminFab from '@/components/molecules/admin-fab';
+import AdminView from '@/components/molecules/admin-view';
 import Container from '@/components/molecules/container';
 import { ExceptionOverlay } from '@/components/molecules/exception';
 import Headline from '@/components/molecules/headline';
@@ -25,6 +25,7 @@ import {
   ClipboardListIcon,
   Edit2Icon,
   PlusIcon,
+  Trash2Icon,
   UsersIcon,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -60,23 +61,29 @@ export default async function Home(params: {
 
   return (
     <>
-      <AdminFab>
+      <AdminView className="m-3">
         {!!cabinet && (
-          <Button asChild>
-            <Link href={`/himatif/${cabinet.slug}/edit`}>
-              <Edit2Icon />
-              Edit kabinet ini
-            </Link>
-          </Button>
+          <>
+            <Button variant={'outline'} size={'sm'}>
+              <Trash2Icon />
+              Hapus &quot;{cabinet.name}&quot;
+            </Button>
+            <Button variant={'outline'} size={'sm'} asChild>
+              <Link href={`/himatif/${cabinet.slug}/edit`}>
+                <Edit2Icon />
+                Edit &quot;{cabinet.name}&quot;
+              </Link>
+            </Button>
+          </>
         )}
 
-        <Button asChild>
+        <Button variant={'outline'} size={'sm'} asChild>
           <Link href={'/himatif/0/tambah'}>
             <PlusIcon />
             Kabinet baru
           </Link>
         </Button>
-      </AdminFab>
+      </AdminView>
 
       {!!cabinet && (
         <Container className="flex flex-col gap-4 lg:flex-row lg:items-center">

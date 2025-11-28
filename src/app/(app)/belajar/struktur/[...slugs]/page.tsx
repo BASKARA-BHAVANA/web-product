@@ -13,8 +13,8 @@ import Link from 'next/link';
 import { Fragment } from 'react/jsx-runtime';
 import { prisma } from '@/lib/prisma';
 import Headline from '@/components/molecules/headline';
-import AdminFab from '@/components/molecules/admin-fab';
 import { ExceptionOverlay } from '@/components/molecules/exception';
+import AdminView from '@/components/molecules/admin-view';
 
 const Page = async (props: { params: Promise<{ slugs: string[] }> }) => {
   const { slugs } = await props.params;
@@ -52,21 +52,21 @@ const Page = async (props: { params: Promise<{ slugs: string[] }> }) => {
 
   return (
     <>
-      <AdminFab>
-        <Button asChild>
-          <Link href={`/belajar/${headSlug ?? '0'}/tambah`}>
-            <PlusIcon />
-            Materi baru
-          </Link>
-        </Button>
-      </AdminFab>
-
       <Container>
         <Headline
           className="mb-12 items-center"
           largeTexts={['Bridging Informatics']}
           headText="Eksplorasi Dunia Informatika"
         />
+
+        <AdminView className="mb-6">
+          <Button variant={'outline'} size={'sm'} asChild>
+            <Link href={`/belajar/${headSlug ?? '0'}/tambah`}>
+              <PlusIcon />
+              Materi baru disini
+            </Link>
+          </Button>
+        </AdminView>
 
         {fixParentCourses.length > 0 && (
           <>

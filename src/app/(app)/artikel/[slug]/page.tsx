@@ -3,11 +3,17 @@ import { ExceptionOverlay } from '@/components/molecules/exception';
 import { Badge } from '@/components/atoms/badge';
 import { Button } from '@/components/atoms/button';
 import { fromNow } from '@/utils/date';
-import { CalendarDaysIcon, UserPenIcon } from 'lucide-react';
+import {
+  CalendarDaysIcon,
+  Edit2Icon,
+  Trash2Icon,
+  UserPenIcon,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { Card, CardContent } from '@/components/atoms/card';
+import AdminView from '@/components/molecules/admin-view';
 
 const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
@@ -41,6 +47,18 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
           <CalendarDaysIcon size={18} />
           <p className="typo-p pe-3">{fromNow(article.createdAt)}</p>
         </div>
+        <AdminView className="mt-3">
+          <Button variant={'outline'} size={'sm'}>
+            <Trash2Icon />
+            Hapus
+          </Button>
+          <Button variant={'outline'} size={'sm'} asChild>
+            <Link href={`/artikel/${slug}/edit`}>
+              <Edit2Icon />
+              Edit
+            </Link>
+          </Button>
+        </AdminView>
       </Container>
 
       <Container className="flex flex-col gap-12 lg:flex-row">

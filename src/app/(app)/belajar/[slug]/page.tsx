@@ -1,5 +1,4 @@
 import Container from '@/components/molecules/container';
-// import { CourseListItem } from '@/components/organisms/course';
 import { Badge } from '@/components/atoms/badge';
 import { Button } from '@/components/atoms/button';
 import {
@@ -9,12 +8,12 @@ import {
   CardTitle,
 } from '@/components/atoms/card';
 import { List } from '@/components/atoms/list';
-import { CornerLeftDownIcon, Edit2Icon } from 'lucide-react';
+import { CornerLeftDownIcon, Edit2Icon, Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { ExceptionOverlay } from '@/components/molecules/exception';
 import { prisma } from '@/lib/prisma';
 import { CourseListItem } from '@/components/organisms/course-widgets';
-import AdminFab from '@/components/molecules/admin-fab';
+import AdminView from '@/components/molecules/admin-view';
 
 const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
@@ -22,7 +21,11 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
     where: { slug },
     include: {
       course: { select: { slug: true, title: true } },
-      courses: { select: { slug: true, title: true, tags: true } },
+      courses: {
+        select: { slug: true, title: true, tags: true },
+        take: 5,
+        orderBy: { createdAt: 'desc' },
+      },
     },
   });
 
@@ -42,15 +45,6 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
 
   return (
     <>
-      <AdminFab>
-        <Button asChild>
-          <Link href={`/belajar/${course.slug}/edit`}>
-            <Edit2Icon />
-            Edit
-          </Link>
-        </Button>
-      </AdminFab>
-
       <Container>
         {course.course && (
           <div className="mb-1 flex items-center gap-2">
@@ -77,6 +71,18 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
             ))}
           </div>
         )}
+        <AdminView className="mt-3">
+          <Button variant={'outline'} size={'sm'}>
+            <Trash2Icon />
+            Hapus
+          </Button>
+          <Button variant={'outline'} size={'sm'} asChild>
+            <Link href={`/belajar/${course.slug}/edit`}>
+              <Edit2Icon />
+              Edit
+            </Link>
+          </Button>
+        </AdminView>
       </Container>
 
       <Container className="flex flex-col gap-12 lg:flex-row">
