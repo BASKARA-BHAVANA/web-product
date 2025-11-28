@@ -15,6 +15,11 @@ import { prisma } from '@/lib/prisma';
 import { CourseListItem } from '@/components/organisms/course-widgets';
 import AdminView from '@/components/molecules/admin-view';
 import { deleteCourse } from '../actions';
+import { isScholarFilter, ScholarsFilter } from '@/lib/actions/scholar';
+import InputField from '@/components/atoms/input-field';
+import { getOption } from '@/utils/option';
+import { Faculties } from '@/data/faculties';
+import { Majors } from '@/data/majors';
 
 const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
@@ -109,6 +114,45 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
           </Card>
         </div>
         <div className="lg:w-1/3">
+          {isScholarFilter({ rules: course.scholarRules }) && (
+            <Card className="mb-6">
+              <CardHeader>
+                <p className="typo-large bg-primary border-primary-foreground w-fit rounded-md border px-2">
+                  Ekslusif
+                </p>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-6 pt-6">
+                <InputField label="Angkatan">
+                  <p className="typo-p">
+                    {(course.scholarRules as ScholarsFilter)?.cohorts?.join(
+                      ', '
+                    )}
+                  </p>
+                </InputField>
+                <InputField label="Sarjana">
+                  <p className="typo-p">
+                    {(course.scholarRules as ScholarsFilter)?.degrees?.join(
+                      ', '
+                    )}
+                  </p>
+                </InputField>
+                <InputField label="Fakultas">
+                  <p className="typo-p">
+                    {(course.scholarRules as ScholarsFilter)?.faculties
+                      ?.map((f) => getOption(Faculties, f)?.label)
+                      .join(', ')}
+                  </p>
+                </InputField>
+                <InputField label="Jurusan">
+                  <p className="typo-p">
+                    {(course.scholarRules as ScholarsFilter)?.majors
+                      ?.map((f) => getOption(Majors, f)?.label)
+                      .join(', ')}
+                  </p>
+                </InputField>
+              </CardContent>
+            </Card>
+          )}
           <Card className="mb-3">
             <CardHeader>
               <CardTitle>Submateri</CardTitle>

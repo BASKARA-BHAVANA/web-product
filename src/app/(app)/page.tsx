@@ -186,7 +186,7 @@ export default async function Home(params: {
               headText={cabinet.name}
             />
             <p className="typo-p mb-3 px-3">{cabinet?.description}</p>
-            <p className="text-muted-foreground typo-large px-3">
+            <p className="typo-p bg-secondary text-secondary-foreground mb-12 w-fit rounded-md px-3 uppercase">
               Periode {cabinet?.startYear}/{cabinet?.endYear}
             </p>
           </div>

@@ -29,6 +29,7 @@ const Page = async (props: {
         title: true,
         slug: true,
         tags: true,
+        scholarRules: true,
       },
       orderBy: { createdAt: 'desc' },
     }),

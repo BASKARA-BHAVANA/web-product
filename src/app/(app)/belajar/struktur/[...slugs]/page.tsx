@@ -37,6 +37,7 @@ const Page = async (props: { params: Promise<{ slugs: string[] }> }) => {
         title: true,
         slug: true,
         tags: true,
+        scholarRules: true,
         _count: { select: { courses: true } },
       },
     }),

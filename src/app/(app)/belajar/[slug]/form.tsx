@@ -20,6 +20,8 @@ import Link from 'next/link';
 import { Course } from '@/generated/prisma';
 import { CreateUpdateCourse, createUpdateCourseSchema } from '../schema';
 import { createCourse, updateCourse } from '../actions';
+import { ScholarsFilterForm } from '@/components/organisms/scholar-widgets';
+import { ScholarsFilter } from '@/lib/actions/scholar';
 
 const Form = ({
   data,
@@ -37,6 +39,7 @@ const Form = ({
       filePath: data?.filePath ?? '',
       content: data?.content ?? '',
       tags: data?.tags ?? '',
+      scholarRules: (data?.scholarRules as ScholarsFilter) ?? {},
     },
     validationSchema: createUpdateCourseSchema,
     onSubmit: async (val) => {
@@ -70,7 +73,7 @@ const Form = ({
           </Link>
         </div>
       )}
-      <Card>
+      <Card className="mb-6">
         <CardHeader>
           <CardTitle>{data?.id ? 'Edit' : 'Tambah'} Materi</CardTitle>
         </CardHeader>
@@ -97,11 +100,13 @@ const Form = ({
               />
             </InputField>
 
-            {form.values.filePath && isURL(form.values.filePath) && (
-              <div className="bg-secondary aspect-video max-w-md overflow-hidden rounded-xl">
-                <iframe src={form.values.filePath} className="size-full" />
-              </div>
-            )}
+            <div className="bg-secondary aspect-video max-w-md overflow-hidden rounded-xl">
+              {form.values.filePath &&
+                isURL(form.values.filePath) &&
+                form.values.filePath.endsWith('/preview') && (
+                  <iframe src={form.values.filePath} className="size-full" />
+                )}
+            </div>
 
             <InputField
               label="URL drive"
@@ -117,7 +122,7 @@ const Form = ({
               />
             </InputField>
 
-            <InputField label="Konten" error={form.errors.content} required>
+            <InputField label="Konten" error={form.errors.content}>
               <RichTextInput
                 value={form.values.content ?? ''}
                 error={form.errors.content}
@@ -129,7 +134,6 @@ const Form = ({
               label="Tags"
               error={form.errors.tags}
               hint="Pisahkan dengan koma ',' tanpa spasi"
-              required
             >
               <Input
                 id="tags"
@@ -138,6 +142,11 @@ const Form = ({
                 onChange={form.handleChange}
               />
             </InputField>
+
+            <ScholarsFilterForm
+              value={form.values.scholarRules}
+              onValueChange={(v) => form.setFieldValue('scholarRules', v)}
+            />
 
             <div className="flex items-center gap-3">
               <Button type="submit" disabled={form.isSubmitting}>

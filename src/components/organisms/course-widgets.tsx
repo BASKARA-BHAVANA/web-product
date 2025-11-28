@@ -12,12 +12,13 @@ import { ComponentProps } from 'react';
 import { ListItem } from '../atoms/list';
 import { Button } from '../atoms/button';
 import { ArrowUpRightIcon } from 'lucide-react';
+import { isScholarFilter } from '@/lib/actions/scholar';
 
 const CourseCard = ({
   data,
   href,
 }: {
-  data: Pick<Course, 'id' | 'title' | 'tags' | 'slug'> & {
+  data: Pick<Course, 'id' | 'title' | 'tags' | 'slug' | 'scholarRules'> & {
     _count?: {
       courses: number;
     };
@@ -25,7 +26,12 @@ const CourseCard = ({
   href?: string;
 }) => {
   return (
-    <Card className="hover:shadow-primary flex aspect-square flex-col overflow-hidden transition-all hover:scale-105 hover:shadow-lg">
+    <Card className="hover:shadow-primary relative flex aspect-square flex-col overflow-hidden transition-all hover:scale-105 hover:shadow-lg">
+      {isScholarFilter({ rules: data.scholarRules }) && (
+        <div className="bg-destructive typo-small text-background absolute top-1/12 -right-2/5 w-full rotate-45 text-center font-sans font-bold uppercase">
+          Ekslusif
+        </div>
+      )}
       <CardHeader>
         <CardTitle>
           <Link

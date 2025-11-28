@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/actions/auth';
 import { flashSet } from '@/lib/actions/flash';
 import { redirect, RedirectType } from 'next/navigation';
+import { buildError } from '@/lib/actions/error';
 
 export async function createCourse({
   data,
@@ -26,10 +27,7 @@ export async function createCourse({
       data: course,
     };
   } catch (err: any) {
-    return {
-      success: false,
-      message: err.message || 'Terjadi masalah',
-    };
+    return buildError(err);
   }
 }
 
@@ -54,10 +52,7 @@ export async function updateCourse({
       data: course,
     };
   } catch (err: any) {
-    return {
-      success: false,
-      message: err.message || 'Terjadi masalah',
-    };
+    return buildError(err);
   }
 }
 
