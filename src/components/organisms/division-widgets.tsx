@@ -34,7 +34,7 @@ const DivisionCard = ({ cabinetSlug, data }: DivisionCardProps) => {
         className="transition-transform group-hover:translate-y-4"
         asChild
       >
-        <Link href={`${cabinetSlug}/divisi/${data.slug}`}>
+        <Link href={`/himatif/${cabinetSlug}/divisi/${data.slug}`}>
           Selengkapnya
           <ArrowRightIcon className="transition-all group-hover:-rotate-45" />
         </Link>

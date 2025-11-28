@@ -55,6 +55,7 @@ export default async function Home(params: {
           logoPath: true,
           _count: { select: { members: true } },
         },
+        orderBy: { name: 'asc' },
       },
       contacts: true,
       _count: { select: { programs: true } },
@@ -210,13 +211,22 @@ export default async function Home(params: {
       {cabinet?.firstImagePath && <ZoomInImage src={cabinet.firstImagePath} />}
 
       {/* DIVISIONS  */}
-      {cabinet && cabinet.divisions.length > 0 && (
+      {cabinet && (
         <Container className="py-24">
-          <Headline
-            largeTexts={['Divisi Kami']}
-            headText="Bersama Mewujudkan Tujuan"
-            className="mb-12"
-          />
+          <div className="mb-12 flex flex-wrap items-center justify-between gap-3">
+            <Headline
+              largeTexts={['Divisi Kami']}
+              headText="Bersama Mewujudkan Tujuan"
+            />
+            <AdminView>
+              <Button variant={'outline'} size={'sm'} asChild>
+                <Link href={`/himatif/${cabinet.slug}/divisi/0/tambah`}>
+                  <PlusIcon />
+                  Divisi baru
+                </Link>
+              </Button>
+            </AdminView>
+          </div>
           <Carousel>
             <div className="from-background via-background/50 pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-24 bg-gradient-to-r to-transparent lg:w-40"></div>
             <div className="from-background via-background/50 pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-24 bg-gradient-to-l to-transparent lg:w-40"></div>
