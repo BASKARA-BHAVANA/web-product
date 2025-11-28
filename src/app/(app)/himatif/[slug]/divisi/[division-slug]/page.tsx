@@ -11,6 +11,7 @@ import AdminView from '@/components/molecules/admin-view';
 import { Button } from '@/components/atoms/button';
 import { Edit2Icon, Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
+import { deleteDivision } from '../actions';
 
 const Page = async (props: {
   params: Promise<{ slug: string; 'division-slug': string }>;
@@ -34,10 +35,17 @@ const Page = async (props: {
   return (
     <>
       <AdminView className="m-3">
-        <Button variant={'outline'} size={'sm'}>
-          <Trash2Icon />
-          Hapus
-        </Button>
+        <form
+          action={async () => {
+            'use server';
+            await deleteDivision(division.id);
+          }}
+        >
+          <Button variant={'outline'} size={'sm'}>
+            <Trash2Icon />
+            Hapus
+          </Button>
+        </form>
         <Button variant={'outline'} size={'sm'} asChild>
           <Link href={`${division.slug}/edit`}>
             <Edit2Icon />

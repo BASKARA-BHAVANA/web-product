@@ -62,13 +62,13 @@ const Page = async (props: {
   return (
     <>
       <Container className="max-w-3xl py-12">
+        <FlashActionResult />
+
         <Headline
           className="mb-12 items-center"
           largeTexts={[cabinet?.name ?? '', 'Program Kerja']}
           headText="Langkah Nyata Kami"
         />
-
-        <FlashActionResult />
 
         <form method="get">
           <Input

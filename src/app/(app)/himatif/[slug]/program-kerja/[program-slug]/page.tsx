@@ -9,6 +9,7 @@ import Link from 'next/link';
 import ZoomInImage from '@/components/molecules/zoomin-image';
 import Headline from '@/components/molecules/headline';
 import { formatTime } from '@/utils/date';
+import { deleteWorkProgram } from '../actions';
 
 const Page = async (props: {
   params: Promise<{ slug: string; 'program-slug': string }>;
@@ -35,10 +36,20 @@ const Page = async (props: {
   return (
     <>
       <AdminView className="m-3">
-        <Button variant={'outline'} size={'sm'}>
-          <Trash2Icon />
-          Hapus
-        </Button>
+        <form
+          action={async () => {
+            'use server';
+            await deleteWorkProgram(
+              program.id,
+              `/himatif/${params.slug}/program-kerja`
+            );
+          }}
+        >
+          <Button variant={'outline'} size={'sm'}>
+            <Trash2Icon />
+            Hapus
+          </Button>
+        </form>
         <Button variant={'outline'} size={'sm'} asChild>
           <Link href={`${program.slug}/edit`}>
             <Edit2Icon />

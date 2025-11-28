@@ -5,6 +5,9 @@ import { Division } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/actions/auth';
 import { CreateUpdateDivision } from './schema';
+import { buildError } from '@/lib/actions/error';
+import { flashSet } from '@/lib/actions/flash';
+import { redirect, RedirectType } from 'next/navigation';
 
 export async function createDivision({
   data,
@@ -29,10 +32,7 @@ export async function createDivision({
       data: division,
     };
   } catch (err: any) {
-    return {
-      success: false,
-      message: err.message || 'Terjadi masalah',
-    };
+    return buildError(err);
   }
 }
 
@@ -72,9 +72,19 @@ export async function updateDivision({
       data: division,
     };
   } catch (err: any) {
-    return {
-      success: false,
-      message: err.message || 'Terjadi masalah',
-    };
+    return buildError(err);
   }
+}
+
+export async function deleteDivision(id: string, redirectTo: string = '/') {
+  try {
+    const division = await prisma.division.delete({ where: { id } });
+    await flashSet({
+      success: true,
+      message: 'Berhasil hapus divisi ' + division.name,
+    } as ActionResult);
+  } catch (err: any) {
+    await flashSet({ success: false, message: err.message } as ActionResult);
+  }
+  redirect(redirectTo, RedirectType.replace);
 }

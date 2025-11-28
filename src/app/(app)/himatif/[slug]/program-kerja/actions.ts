@@ -7,6 +7,8 @@ import { auth } from '@/lib/actions/auth';
 import { CreateUpdateWorkProgram } from './schema';
 import { buildError } from '@/lib/actions/error';
 import { toDate } from '@/utils/date';
+import { flashSet } from '@/lib/actions/flash';
+import { redirect, RedirectType } from 'next/navigation';
 
 export async function createWorkProgram({
   data,
@@ -61,4 +63,17 @@ export async function updateWorkProgram({
   } catch (err: any) {
     return buildError(err);
   }
+}
+
+export async function deleteWorkProgram(id: string, redirectTo: string = '/') {
+  try {
+    const workProgram = await prisma.workProgram.delete({ where: { id } });
+    await flashSet({
+      success: true,
+      message: 'Berhasil hapus program ' + workProgram.title,
+    } as ActionResult);
+  } catch (err: any) {
+    await flashSet({ success: false, message: err.message } as ActionResult);
+  }
+  redirect(redirectTo, RedirectType.replace);
 }
