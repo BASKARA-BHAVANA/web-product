@@ -8,6 +8,12 @@ import {
   CarouselPrevious,
 } from '@/components/atoms/carousel';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/atoms/dropdown-menu';
+import {
   ScrollVelocityContainer,
   ScrollVelocityRow,
 } from '@/components/atoms/magicui/scroll-based-velocity';
@@ -20,8 +26,10 @@ import { ArticleCard } from '@/components/organisms/article-widgets';
 import { CabinetContactCard } from '@/components/organisms/cabinet-widgets';
 import { DivisionCard } from '@/components/organisms/division-widgets';
 import { prisma } from '@/lib/prisma';
+import { cn } from '@/utils/misc';
 import {
   ArrowUpRightIcon,
+  ChevronsUpDownIcon,
   ClipboardListIcon,
   Edit2Icon,
   PlusIcon,
@@ -50,6 +58,19 @@ export default async function Home(params: {
       },
       contacts: true,
       _count: { select: { programs: true } },
+    },
+  });
+
+  const cabinets = await prisma.cabinet.findMany({
+    select: {
+      slug: true,
+      logoPath: true,
+      name: true,
+      startYear: true,
+      endYear: true,
+    },
+    orderBy: {
+      startYear: 'desc',
     },
   });
 
@@ -97,17 +118,49 @@ export default async function Home(params: {
             />
           </div>
           <div className="max-w-2xl grow">
-            <div className="bg-primary flex w-fit items-center gap-2 rounded-t-lg px-3 pt-3">
-              <p className="typo-large bg-primary-foreground text-primary rounded-sm px-2">
-                Himatif
-              </p>
-              <p className="typo-large">Kabinet</p>
-            </div>
-            <div className="bg-primary mb-4 flex w-fit items-center gap-2 rounded-lg rounded-tl-none p-3">
-              <h1 className="typo-h1">{cabinet?.name}</h1>
-            </div>
-            <p className="typo-p mb-4 px-3">{cabinet?.description}</p>
-            <p className="text-muted-foreground px-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="mb-3" variant="outline">
+                  Kabinet lainnya <ChevronsUpDownIcon />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-72">
+                {cabinets.map((data, i) => (
+                  <DropdownMenuItem
+                    key={i}
+                    className={cn(
+                      data.slug == cabinet.slug ? '!bg-primary' : ''
+                    )}
+                  >
+                    <Link
+                      href={'/?kabinet=' + data.slug}
+                      className={'flex items-center gap-3'}
+                    >
+                      <Image
+                        width={80}
+                        height={80}
+                        alt=""
+                        src={data.logoPath ?? ''}
+                        className="size-8 object-contain"
+                      />
+                      <div>
+                        <p className="typo-large">{data.name}</p>
+                        <p className="typo-small text-muted-foreground mb-1">
+                          {data.startYear}/{data.endYear}
+                        </p>
+                      </div>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Headline
+              className="mb-3"
+              largeTexts={['Himatif', 'Kabinet']}
+              headText={cabinet.name}
+            />
+            <p className="typo-p mb-3 px-3">{cabinet?.description}</p>
+            <p className="text-muted-foreground typo-large px-3">
               Periode {cabinet?.startYear}/{cabinet?.endYear}
             </p>
           </div>
