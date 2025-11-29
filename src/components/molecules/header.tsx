@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from '../atoms/sheet';
 import { Button } from '../atoms/button';
 import { getServerSession } from 'next-auth';
 import AuthButton from './auth-button';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/config/auth-options';
 
 const Navs = async () => {
   const session = await getServerSession(authOptions);

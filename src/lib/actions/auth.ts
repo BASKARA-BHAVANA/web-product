@@ -1,6 +1,6 @@
 'use server';
 
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/config/auth-options';
 import { Role } from '@/generated/prisma';
 import { getServerSession, Session } from 'next-auth';
 import { headers } from 'next/headers';

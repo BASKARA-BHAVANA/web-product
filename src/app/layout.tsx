@@ -3,10 +3,10 @@ import { Fira_Code, Montserrat } from 'next/font/google';
 // @ts-expect-error ignore
 import './globals.css';
 import { getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]/route';
 import SessionProvider from '../components/molecules/providers/session-provider';
 import { Toaster } from '@/components/atoms/sonner';
 import { ScrollToTop } from '@/components/molecules/scrolls';
+import { authOptions } from '@/config/auth-options';
 
 const sans = Montserrat({
   variable: '--font-sans',
