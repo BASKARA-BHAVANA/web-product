@@ -1,5 +1,11 @@
 'use client';
 
+import { UndrawServerDown } from '@/assets/images';
+import { Button } from '@/components/atoms/button';
+import BrandLogo from '@/components/molecules/brand-logo';
+import Container from '@/components/molecules/container';
+import { ExceptionOverlay } from '@/components/molecules/exception';
+import { buildError } from '@/lib/actions/error';
 import { useRouter } from 'next/navigation';
 
 export default function Error({
@@ -9,37 +15,29 @@ export default function Error({
   error: Error;
   reset: () => void;
 }) {
-  const router = useRouter();
+  const router = useRouter(),
+    errorBuilt = buildError(error);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-6">
-      <div className="max-w-xl text-center">
-        <h1 className="mb-2 text-3xl font-semibold">Something went wrong</h1>
-        <p className="mb-6 text-sm text-gray-600">
-          An unexpected error happened. Try again or contact support.
-        </p>
+    <Container>
+      <BrandLogo />
 
-        <div className="flex justify-center gap-3">
-          <button
-            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            onClick={() => reset()} // attempts to recover the boundary
-          >
-            Try again
-          </button>
+      <ExceptionOverlay
+        img={UndrawServerDown}
+        className="max-w-lg"
+        title="Terjadi Kesalahan Tak Terduga"
+        subtitle={errorBuilt.message}
+      >
+        <Button onClick={() => reset()}>Coba lagi</Button>
 
-          <button
-            className="rounded border px-4 py-2"
-            onClick={() => router.push('/')}
-          >
-            Go home
-          </button>
-        </div>
+        <Button variant={'outline'} onClick={() => router.push('/')}>
+          Halaman utama
+        </Button>
+      </ExceptionOverlay>
 
-        {/* dev-only stack */}
-        <pre className="mt-6 overflow-auto rounded border bg-white p-3 text-left text-xs">
-          {process.env.NODE_ENV === 'development' ? String(error?.stack) : null}
-        </pre>
-      </div>
-    </div>
+      <pre className="bg-background typo-small mx-auto mt-6 max-w-lg overflow-x-auto rounded-md border p-3 text-left">
+        {process.env.NODE_ENV === 'development' ? String(error?.stack) : null}
+      </pre>
+    </Container>
   );
 }
