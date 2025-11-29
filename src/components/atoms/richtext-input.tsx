@@ -1,6 +1,5 @@
 'use client';
 
-// @ts-expect-error ignore
 import 'react-quill-new/dist/quill.snow.css';
 import { useRef } from 'react';
 import dynamic from 'next/dynamic';

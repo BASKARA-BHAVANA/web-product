@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Fira_Code, Montserrat } from 'next/font/google';
-// @ts-expect-error ignore
 import './globals.css';
 import { getServerSession } from 'next-auth';
 import SessionProvider from '../components/molecules/providers/session-provider';
