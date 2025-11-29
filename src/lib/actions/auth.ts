@@ -3,6 +3,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Role } from '@/generated/prisma';
 import { getServerSession, Session } from 'next-auth';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export async function auth(
@@ -21,8 +22,11 @@ export async function auth(
 ) {
   const session = await getServerSession(authOptions);
 
+  const h = await headers(),
+    url = h.get('x-pathname') || '/';
+
   if (!session || !session.user?.email) {
-    if (options.redirect) redirect('/');
+    if (options.redirect) redirect('/auth/login?callback=' + url);
     return null;
   }
 
