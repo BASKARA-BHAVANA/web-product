@@ -1,23 +1,19 @@
-export interface Option {
-  value: string;
+export interface Option<V = string, M = Record<string, string>> {
+  value: V;
   label: string;
+  meta?: M;
 }
 
-export const getOption = (list: Option[], value: string): Option | null => {
-  return list.find((o) => o.value == value) ?? null;
+export const getOption = <T extends Option>(
+  list: T[],
+  value?: string | null
+): T | null => {
+  return list.find((o) => o.value == (value ?? '')) ?? null;
 };
 
-export const getOptionsLabel = (
-  list: Option[],
-  value: string,
-  { fallback = '' }: { fallback?: string } = {}
-): string => {
-  return list.find((o) => o.value == value)?.label ?? fallback;
-};
-
-export const getOptionLabel = (
-  option: Option,
-  { fallback = '' }: { fallback?: string } = {}
-): string => {
-  return option.label ?? fallback;
+export const toOptions = (obj: Record<string, string>): Option[] => {
+  return Object.entries(obj).map(([k, v]) => ({
+    label: v,
+    value: k,
+  }));
 };

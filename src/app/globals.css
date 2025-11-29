@@ -25,6 +25,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -41,6 +42,28 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --animate-background-position-spin: background-position-spin 3000ms infinite
+    alternate;
+  @keyframes background-position-spin {
+    0% {
+      background-position: top center;
+    }
+    100% {
+      background-position: bottom center;
+    }
+  }
+  --animate-shine: shine var(--duration) infinite linear;
+  @keyframes shine {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    to {
+      background-position: 0% 0%;
+    }
+  }
 }
 
 :root {
@@ -53,7 +76,7 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(94.7 0.203 107);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(0.93 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -62,8 +85,8 @@
   --destructive: oklch(0.577 0.245 27.325);
   --success: oklch(0.577 0.245 145);
   --warning: oklch(0.577 0.245 85);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --border: oklch(0.822 0 0);
+  --input: oklch(0.822 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -118,7 +141,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50 font-sans;
+    @apply border-border outline-ring/50 font-mono;
   }
   body {
     @apply bg-background text-foreground;
@@ -176,14 +199,5 @@
 
   .ql-container {
     @apply !border-input min-h-64 rounded-b-sm shadow-none;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }

@@ -24,3 +24,7 @@ export const fromNow = (
   if (!time) return fb;
   return moment(time).fromNow();
 };
+
+export const toDate = (time: string | Date) => {
+  return moment(time).toDate();
+};
