@@ -1,40 +1,57 @@
 #!/bin/bash
 
 echo "Checking migration status..."
+echo ""
 
-# Check if containers are running
-if ! docker compose -f docker-compose.prod.yml ps | grep -q "himatif-web-prod.*Up"; then
-    echo "Error: Web container is not running. Please start containers first."
+# Check if database container is running (required)
+if ! docker compose -f docker-compose.prod.yml ps | grep -q "himatif-db-prod.*Up"; then
+    echo "Error: Database container is not running. Please start containers first."
+    echo "Run: docker compose -f docker-compose.prod.yml up -d db"
     exit 1
 fi
 
-# Check migration status
-MIGRATION_STATUS=$(docker compose -f docker-compose.prod.yml exec -T web npx prisma migrate status 2>&1)
-
-if echo "$MIGRATION_STATUS" | grep -q "Database schema is in sync"; then
-    echo "Database schema is already in sync. No action needed."
-    exit 0
+# Check if web container is running
+WEB_CONTAINER_RUNNING=false
+if docker compose -f docker-compose.prod.yml ps | grep -q "himatif-web-prod.*Up"; then
+    WEB_CONTAINER_RUNNING=true
+    echo "Web container is running. Checking migration status via Prisma..."
+    MIGRATION_STATUS=$(docker compose -f docker-compose.prod.yml exec -T web npx prisma migrate status 2>&1)
+else
+    echo "Web container is not running. Checking migration state directly in database..."
+    echo "This is normal if migrations failed and prevented the container from starting."
+    echo ""
+    MIGRATION_STATUS=""
 fi
 
-if echo "$MIGRATION_STATUS" | grep -q "P3009"; then
+# Check for failed migrations directly in database
+FAILED_MIGRATIONS=$(docker compose -f docker-compose.prod.yml exec -T db psql -U app -d db_uin_himatif -t -c "SELECT migration_name FROM \"_prisma_migrations\" WHERE finished_at IS NULL ORDER BY started_at DESC LIMIT 1;" 2>/dev/null | tr -d '[:space:]')
+
+if [ -z "$FAILED_MIGRATIONS" ] && [ "$WEB_CONTAINER_RUNNING" = true ]; then
+    if echo "$MIGRATION_STATUS" | grep -q "Database schema is in sync"; then
+        echo "Database schema is already in sync. No action needed."
+        exit 0
+    fi
+fi
+
+# Check if we have a failed migration (either from Prisma status or database query)
+if [ -n "$FAILED_MIGRATIONS" ] || ([ "$WEB_CONTAINER_RUNNING" = true ] && echo "$MIGRATION_STATUS" | grep -q "P3009"); then
     echo "Failed migration detected (P3009)"
     echo ""
     echo "Attempting to resolve failed migration..."
     echo ""
     
-    # Try to extract migration name from error message
-    # Error format: "The `20251125154749_init` migration started at ... failed"
-    FAILED_MIGRATION=$(echo "$MIGRATION_STATUS" | grep -oP '`\K[^`]+' | head -1)
+    # Get failed migration name from database (most reliable method)
+    FAILED_MIGRATION="$FAILED_MIGRATIONS"
     
-    # If extraction failed, query database for failed migrations
-    if [ -z "$FAILED_MIGRATION" ]; then
-        FAILED_MIGRATION=$(docker compose -f docker-compose.prod.yml exec -T db psql -U app -d db_uin_himatif -t -c "SELECT migration_name FROM \"_prisma_migrations\" WHERE finished_at IS NULL ORDER BY started_at DESC LIMIT 1;" 2>/dev/null | tr -d '[:space:]')
+    # If not found in database, try to extract from Prisma error message
+    if [ -z "$FAILED_MIGRATION" ] && [ "$WEB_CONTAINER_RUNNING" = true ]; then
+        FAILED_MIGRATION=$(echo "$MIGRATION_STATUS" | grep -oP '`\K[^`]+' | head -1)
     fi
     
     # Fallback to known migration name
     if [ -z "$FAILED_MIGRATION" ]; then
         FAILED_MIGRATION="20251125154749_init"
-        echo "⚠ Could not detect migration name, using default: $FAILED_MIGRATION"
+        echo "Could not detect migration name, using default: $FAILED_MIGRATION"
     fi
     
     echo "Failed migration: $FAILED_MIGRATION"
@@ -58,8 +75,14 @@ EOF
         if [ $? -eq 0 ]; then
             echo "Migration marked as applied"
             echo ""
-            echo "Retrying migration deploy..."
-            docker compose -f docker-compose.prod.yml exec web npx prisma migrate deploy
+            if [ "$WEB_CONTAINER_RUNNING" = true ]; then
+                echo "Retrying migration deploy..."
+                docker compose -f docker-compose.prod.yml exec web npx prisma migrate deploy
+            else
+                echo "Migration state fixed. You can now start the web container:"
+                echo "  docker compose -f docker-compose.prod.yml up -d web"
+                echo "  docker compose -f docker-compose.prod.yml exec web npx prisma migrate deploy"
+            fi
         else
             echo "Failed to update migration status"
             exit 1
@@ -82,18 +105,30 @@ EOF
         if [ $? -eq 0 ]; then
             echo "Migration marked as rolled back"
             echo ""
-            echo "Retrying migration deploy..."
-            docker compose -f docker-compose.prod.yml exec web npx prisma migrate deploy
+            if [ "$WEB_CONTAINER_RUNNING" = true ]; then
+                echo "Retrying migration deploy..."
+                docker compose -f docker-compose.prod.yml exec web npx prisma migrate deploy
+            else
+                echo "Migration state fixed. You can now start the web container:"
+                echo "  docker compose -f docker-compose.prod.yml up -d web"
+                echo "  docker compose -f docker-compose.prod.yml exec web npx prisma migrate deploy"
+            fi
         else
             echo "Failed to update migration status"
             exit 1
         fi
     fi
 else
-    echo "Migration status:"
-    echo "$MIGRATION_STATUS"
-    echo ""
-    echo "No P3009 error detected. Running normal migration deploy..."
-    docker compose -f docker-compose.prod.yml exec web npx prisma migrate deploy
+    if [ "$WEB_CONTAINER_RUNNING" = true ]; then
+        echo "Migration status:"
+        echo "$MIGRATION_STATUS"
+        echo ""
+        echo "No P3009 error detected. Running normal migration deploy..."
+        docker compose -f docker-compose.prod.yml exec web npx prisma migrate deploy
+    else
+        echo "No failed migrations found in database."
+        echo "You can start the web container:"
+        echo "  docker compose -f docker-compose.prod.yml up -d web"
+    fi
 fi
 
