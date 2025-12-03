@@ -4,7 +4,8 @@ echo "Checking migration status..."
 echo ""
 
 # Check if database container is running (required)
-if ! docker compose -f docker-compose.prod.yml ps | grep -q "himatif-db-prod.*Up"; then
+# Use docker ps directly for more reliable checking
+if ! docker ps --filter "name=himatif-db-prod" --filter "status=running" --format "{{.Names}}" | grep -q "himatif-db-prod"; then
     echo "Error: Database container is not running. Please start containers first."
     echo "Run: docker compose -f docker-compose.prod.yml up -d db"
     exit 1
@@ -12,7 +13,7 @@ fi
 
 # Check if web container is running
 WEB_CONTAINER_RUNNING=false
-if docker compose -f docker-compose.prod.yml ps | grep -q "himatif-web-prod.*Up"; then
+if docker ps --filter "name=himatif-web-prod" --filter "status=running" --format "{{.Names}}" | grep -q "himatif-web-prod"; then
     WEB_CONTAINER_RUNNING=true
     echo "Web container is running. Checking migration status via Prisma..."
     MIGRATION_STATUS=$(docker compose -f docker-compose.prod.yml exec -T web npx prisma migrate status 2>&1)
